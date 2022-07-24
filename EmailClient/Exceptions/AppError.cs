@@ -28,8 +28,8 @@ public class AppError : ApplicationException
     /// 自定义应用异常
     /// </summary>
     /// <param name="code">异常码</param>
-    /// <param name="detail">异常详情</param>
-    /// <param name="message">用户提示</param>
+    /// <param name="message">异常信息</param>
+    /// <param name="detail">用户提示</param>
     public AppError(string code, string? detail = null, string? message=null) : base(message)
     {
         Code = code;
