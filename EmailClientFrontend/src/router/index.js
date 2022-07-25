@@ -19,11 +19,19 @@ const routes = [
     children: [
       {
         path: "inbox",
-        component: import("../views/InboxView.vue"),
+        component: () => import("../views/InboxView.vue"),
       },
       {
         path: "draft",
-        component: import("../views/DraftView.vue"),
+        component: () => import("../views/DraftView.vue"),
+      },
+      {
+        path: "sent",
+        component: () => import("../views/SentView.vue"),
+      },
+      {
+        path: "settings",
+        component: () => import("../views/SettingView.vue"),
       },
     ],
   },
