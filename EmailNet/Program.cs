@@ -8,20 +8,20 @@ var pop3Server = new ServerUrl("pop3.163.com", 110);
 var smtpServer = new ServerUrl("smtp.163.com", 25);
 
 var pop3Client = new Pop3Client(email, password, pop3Server);
-pop3Client.Connect();
+await pop3Client.ConnectAsync();
 
-var count = pop3Client.GetMailCount();
+var count = await pop3Client.GetMailCountAsync();
 Console.WriteLine("You have {0} emails in your inbox.", count);
 
 for (var i = 1; i <= count; i++)
 {
-    var uid = pop3Client.GetMaidUid(i);
-    var mail = pop3Client.GetMailContent(i);
+    var uid = await pop3Client.GetMaidUidAsync(i);
+    var mail = await pop3Client.GetMailContentAsync(i);
     Console.WriteLine("[{0}]\n{1}", uid, mail);
 }
 
-pop3Client.Disconnect();
+await pop3Client.DisconnectAsync();
 
 var smtpClient = new SmtpClient(email, password, smtpServer);
-smtpClient.Connect();
-smtpClient.Disconnect();
+await smtpClient.ConnectAsync();
+await smtpClient.DisconnectAsync();

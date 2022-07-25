@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using System;
 
 namespace EmailNet;
 
@@ -48,10 +49,6 @@ public abstract class BaseClient
             _client = new TcpClient(server.Host, server.Port);
             _streamWriter = _client.GetStream();
             _streamReader = new StreamReader(_client.GetStream());
-            //连接返回的返回结果
-            var response = ReceiveFirstLine();
-            CheckResponse(response);
-            
         }
         catch (Exception e)
         {
@@ -61,8 +58,20 @@ public abstract class BaseClient
 
         State = ClientState.Unconnected;
     }
+
+    public void Connect()
+    {
+        //连接返回的返回结果
+        var response = ReceiveFirstLine();
+        CheckResponse(response);
+    }
     
-    public abstract void Connect();
+    public async Task ConnectAsync()
+    {
+        //连接返回的返回结果
+        var response = await ReceiveFirstLineAsync();
+        CheckResponse(response);
+    }
 
     public void Disconnect()
     {
@@ -70,6 +79,17 @@ public abstract class BaseClient
         
         SendCommand("QUIT");
         var response = ReceiveFirstLine();
+        _streamReader.Close();
+        _client.Close();
+        State = ClientState.Unconnected;
+    }
+    
+    public async Task DisconnectAsync()
+    {
+        CheckState();
+        
+        await SendCommandAsync("QUIT");
+        var response = await ReceiveFirstLineAsync();
         _streamReader.Close();
         _client.Close();
         State = ClientState.Unconnected;
@@ -85,6 +105,18 @@ public abstract class BaseClient
         var arrayToSend = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
         
         _streamWriter.Write(arrayToSend, 0, arrayToSend.Length);
+    }
+    
+    /// <summary>
+    /// 向服务器发送命令
+    /// </summary>
+    /// <param name="command">命令</param>
+    protected async Task SendCommandAsync(string command)
+    {
+        var cmdData = command + "\r\n";
+        var arrayToSend = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+        
+        await _streamWriter.WriteAsync(arrayToSend);
     }
     
     /// <summary>
@@ -115,6 +147,16 @@ public abstract class BaseClient
     }
     
     /// <summary>
+    /// 从返回回来的流中读取第一行数据
+    /// </summary>
+    /// <returns>第一行数据</returns>
+    protected async Task<string> ReceiveFirstLineAsync()
+    {
+        var line = await _streamReader.ReadLineAsync();
+        return line ?? string.Empty;
+    }
+    
+    /// <summary>
     /// 从返回回来的流中获取文本信息
     /// </summary>
     /// <returns>返回最后的文本信息</returns>
@@ -126,6 +168,24 @@ public abstract class BaseClient
         while (temp != null && temp != ".")
         {
             temp = _streamReader.ReadLine();
+            response.Append(temp + "\n");
+        }
+        
+        return response.ToString();
+    }
+    
+    /// <summary>
+    /// 从返回回来的流中获取文本信息
+    /// </summary>
+    /// <returns>返回最后的文本信息</returns>
+    protected async Task<string> ReceiveResponseAsync()
+    {
+        var response = new StringBuilder();
+        var temp = await _streamReader.ReadLineAsync() + "\n";
+        response.Append(temp);
+        while (temp != null && temp != ".")
+        {
+            temp = await _streamReader.ReadLineAsync();
             response.Append(temp + "\n");
         }
         
