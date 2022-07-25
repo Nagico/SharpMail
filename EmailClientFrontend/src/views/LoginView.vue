@@ -96,6 +96,7 @@ const handleAction = () => {
             userInfo.pop3Ssl
           )
           .then(() => {
+            localStorage.setItem("email", userInfo.email);
             router.replace("/home/inbox");
           })
           .catch(err => {
@@ -114,7 +115,10 @@ const handleAction = () => {
     user
       .login(userInfo.email, userInfo.password)
       .then(res => {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("userid", res.id);
         if (res.is_active) {
+          localStorage.setItem("email", userInfo.email);
           router.replace("/home/inbox");
         } else {
           reg.value = true;

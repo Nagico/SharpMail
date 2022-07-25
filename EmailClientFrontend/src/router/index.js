@@ -11,7 +11,7 @@ const routes = [
   },
   {
     path: "/home",
-    name: "mail",
+    name: "home",
     meta: {
       needAuth: true,
     },
@@ -38,7 +38,8 @@ router.beforeEach(to => {
   if (to.meta.needAuth) {
     //判断当前路由是否需要进行权限控制
     let token = localStorage.getItem("token");
-    if (token == null || token == "") {
+    let email = localStorage.getItem("email");
+    if (!token || !email) {
       router.replace("/");
       ElMessage({
         message: "您未登录",

@@ -15,8 +15,6 @@ export function login(email, password) {
       })
       .then(res => {
         if (res.data.token) {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("userid", res.data.id);
           resolve(res.data);
         } else {
           reject(res.data ? res.data.detail : res.message);
@@ -34,6 +32,7 @@ export function login(email, password) {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("userid");
+  localStorage.removeItem("email");
 }
 
 /**
