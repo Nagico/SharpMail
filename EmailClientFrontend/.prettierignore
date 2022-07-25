@@ -1,0 +1,21 @@
+# .prettierignore
+
+*.min.js
+/node_modules
+/miniprogram_npm
+/src/lottie-json
+mock.config.json
+# OS
+.DS_Store
+.idea
+.editorconfig
+.npmrc
+package-lock.json
+# Ignored suffix
+*.log
+*.md
+*.svg
+*.png
+*ignore
+## Built-files
+.cache
