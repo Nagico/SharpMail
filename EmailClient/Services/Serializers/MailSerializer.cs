@@ -2,6 +2,7 @@
 using EmailClient.Entities;
 using EmailClient.Utils;
 using MimeKit;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace EmailClient.Services.Serializers;
@@ -17,7 +18,8 @@ public class MailSerializer : BaseSerializer
             ["id"] = mail.Id,
             ["from"] = mail.From,
             ["subject"] = mail.Subject,
-            ["data"] = JObject.FromObject(mail.Date)
+            ["data"] = mail.Date,
+            ["read"] = mail.Read
         };
         
         return res;
@@ -98,7 +100,7 @@ public class MailSerializer : BaseSerializer
             ["cc"] = AddressList(msg.Cc),
             ["bcc"] = AddressList(msg.Bcc),
             ["subject"] = msg.Subject,
-            ["date"] = JObject.FromObject(msg.Date),
+            ["date"] = mail.Date,
             ["content"] = msg.HtmlBody ?? msg.TextBody,
             ["importance"] = msg.Importance.ToString(),
             ["attachments"] = await AttachmentListAsync(msg.Attachments.ToList())
