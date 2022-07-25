@@ -3,9 +3,9 @@ using System.Text;
 
 namespace EmailNet;
 
-public class SMTPClient : BaseClient
+public class SmtpClient : BaseClient
 {
-    public SMTPClient(string email, string password, Uri smtpServer) : base(email, password, smtpServer)
+    public SmtpClient(string email, string password, ServerUrl smtpServer) : base(email, password, smtpServer)
     {
     }
     

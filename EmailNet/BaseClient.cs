@@ -12,18 +12,32 @@ public enum ClientState
     Unconnected  //未连接
 }
 
+public class ServerUrl
+{
+    public string Host { get; set; }
+    public int Port { get; set; }
+    public bool UseSsl { get; set; }
+    
+    public ServerUrl(string host, int port, bool useSsl = false)
+    {
+        Host = host;
+        Port = port;
+        UseSsl = useSsl;
+    }
+}
+
 public abstract class BaseClient
 {
     protected readonly string email;
     protected readonly string password;
-    protected readonly Uri server;
+    protected readonly ServerUrl server;
     
     protected readonly TcpClient _client;   //客户端
     protected readonly NetworkStream _streamWriter;  //写,发送命令
     protected readonly StreamReader _streamReader;   //读
     public ClientState State { get; set; } //当前连接状态
 
-    protected BaseClient(string email, string password, Uri server)
+    protected BaseClient(string email, string password, ServerUrl server)
     {
         this.email = email;
         this.password = password;
@@ -37,6 +51,7 @@ public abstract class BaseClient
             //连接返回的返回结果
             var response = ReceiveFirstLine();
             CheckResponse(response);
+            
         }
         catch (Exception e)
         {

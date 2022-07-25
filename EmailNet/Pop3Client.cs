@@ -11,7 +11,7 @@ namespace EmailNet;
 
 public class Pop3Client : BaseClient
 {
-    public Pop3Client(string email, string password, Uri pop3Server) : base(email, password, pop3Server)
+    public Pop3Client(string email, string password, ServerUrl pop3Server) : base(email, password, pop3Server)
     {
     }
 
@@ -66,15 +66,33 @@ public class Pop3Client : BaseClient
     /// </summary>
     /// <param name="emailId">邮件id</param>
     /// <returns>邮件内容</returns>
-    public string GetMail(int emailId)
+    public string GetMailContent(int emailId)
     {
         CheckState();
         
         SendCommand("RETR " + emailId);
-        var response = ReceiveResponse();
-        CheckResponse(response, "获取邮件失败", State);
-
+        var response = ReceiveFirstLine();
+        CheckResponse(response, "获取邮件内容失败", State);
+        
+        response = ReceiveResponse();
         return response;
+    }
+    
+    /// <summary>
+    /// 获取邮件uid
+    /// </summary>
+    /// <param name="emailId">邮件id</param>
+    /// <returns>uid</returns>
+    public string GetMaidUid(int emailId)
+    {
+        CheckState();
+        
+        SendCommand("UIDL " + emailId);
+        var response = ReceiveFirstLine();
+        CheckResponse(response, "获取邮件uid失败", State);
+        
+        var parts = response.Split(' ');
+        return parts[2];
     }
     
     /// <summary>
@@ -123,7 +141,7 @@ public class Pop3Client : BaseClient
             SendCommand("NOOP");
         }
     }
-
+    
     public void Reset()
     {
         if (State == ClientState.Connected)
