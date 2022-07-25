@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3000",
     "build": "vite build",
     "lint": "eslint src/**/*.{js,vue} --fix",
     "format": "prettier --write 'src/**/*.{js,vue}'"
   },
   "dependencies": {
+    "@vueuse/core": "^8.9.4",
     "axios": "^0.27.2",
     "element-plus": "^2.2.10",
     "vue": "^3.2.37",
