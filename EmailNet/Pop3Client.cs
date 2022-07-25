@@ -234,8 +234,8 @@ public class Pop3Client : BaseClient
         CheckState();
         
         var emailId = await FindEmailIdAsync(uid);
-        
-        if (emailId == -1) throw new Pop3DeleteException("未找到邮件");
+
+        if (emailId == -1) return;
         
         await SendCommandAsync("DELE " + uid);
         
