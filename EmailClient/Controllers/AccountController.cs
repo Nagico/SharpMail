@@ -25,7 +25,7 @@ public class AccountController : BaseController
     [HttpGet(Name = "GetAccount")]
     public async Task<ActionResult> GetAccount()
     {
-        var account = await _accountService.GetAccountDetail(UserId);
+        var account = await _accountService.GetAccountDetail(AccountId);
         return Ok(account);
     }
     
@@ -37,7 +37,7 @@ public class AccountController : BaseController
     [HttpPut(Name = "UpdateAccount")]
     public async Task<ActionResult> UpdateAccount(UpdateAccountViewModel account)
     {
-        var newAccount = await _accountService.UpdateAccount(UserId, 
+        var newAccount = await _accountService.UpdateAccount(AccountId, 
             account.SmtpHost, account.SmtpPort, account.SmtpSsl, 
             account.Pop3Host, account.Pop3Port, account.Pop3Ssl);
         return Ok(newAccount);

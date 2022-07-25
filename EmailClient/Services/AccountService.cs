@@ -18,8 +18,14 @@ public class AccountService
         _context = context;
         _accountSerializer = new AccountSerializer(_context);
     }
-
-    private async Task<Account> GetAccount(int id)
+    
+    /// <summary>
+    /// 获取账户信息
+    /// </summary>
+    /// <param name="id">账户id</param>
+    /// <returns>account 对象</returns>
+    /// <exception cref="AppError">账户id不存在</exception>
+    public async Task<Account> GetAccount(int id)
     {
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
         if (account == null)

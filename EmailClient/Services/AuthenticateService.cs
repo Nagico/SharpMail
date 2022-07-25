@@ -124,7 +124,7 @@ public class AuthenticateService
     {
         var claims = new[] {
             // 用户id
-            new Claim("UserId", account.Id.ToString()), 
+            new Claim("AccountId", account.Id.ToString()), 
             // 过期时间
             new Claim(JwtRegisteredClaimNames.Exp, $"{new DateTimeOffset(DateTime.Now.AddMinutes(Convert.ToInt32(_configuration.GetSection("JWT")["Expires"]))).ToUnixTimeSeconds()}"),
             // 签发时间
