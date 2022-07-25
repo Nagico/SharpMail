@@ -1,31 +1,76 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from "./components/HelloWorld.vue";
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <router-view />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+<script setup>
+import { useDark } from "@vueuse/core";
+
+useDark();
+</script>
+
+<style lang="less">
+* {
+  margin: 0;
+  padding: 0;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+:root {
+  --theme: #409eff;
+  --theme-transparent: #40a0ff33;
+
+  --primary-bg: #f5f5f5;
+  --secondary-bg: #cccccc;
+  --primary-text: #000;
+  --secondary-text: rgb(44, 36, 36);
+  --separator-color: #e6e6e680;
+
+  --material: rgba(245, 245, 245, 0.8);
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --theme: #257ed6;
+    --theme-transparent: #40a0ff33;
+
+    --primary-bg: #1f1f1f;
+    --secondary-bg: #2f2f2f;
+    --primary-text: rgb(237, 237, 237);
+    --secondary-text: #dadadad0;
+    --separator-color: #60606080;
+
+    --material: rgba(39, 39, 39, 0.8);
+  }
+}
+
+#app {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  color: var(--primary-text);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  .dark & {
+    color: #ecf0f1;
+    background-color: #141414;
+  }
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+</style>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

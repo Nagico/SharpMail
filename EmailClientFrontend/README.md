@@ -1,4 +1,4 @@
-# EmailClient 前端
+# SharpMail 前端
 
 ## 技术栈
 
