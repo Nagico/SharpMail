@@ -61,6 +61,9 @@ public class MailService
         {
             throw new AppError("A0510", "邮件不存在");
         }
+        
+        mail.Read = true;
+        await _context.SaveChangesAsync();
 
         var msg = await MimeMessage.LoadAsync(await MailUtil.ToStream(mail.Content));
 
