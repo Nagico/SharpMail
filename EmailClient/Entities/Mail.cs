@@ -18,14 +18,19 @@ public class Mail
     public Account? Account { get; set; }
     
     /// <summary>
+    /// 邮件Uid
+    /// </summary>
+    public string Uid { get; set; }
+
+    /// <summary>
     /// 邮件类型
     /// </summary>
-    public int? Type { get; set; }
+    public int Type { get; set; }
     
     /// <summary>
     /// 已读
     /// </summary>
-    public bool? Read { get; set; }
+    public bool Read { get; set; }
     
     /// <summary>
     /// 邮件主题
@@ -41,6 +46,11 @@ public class Mail
     /// 收件人
     /// </summary>
     public string? To { get; set; }
+    
+    /// <summary>
+    /// 日期
+    /// </summary>
+    public DateTime Date { get; set; }
     
     /// <summary>
     /// 邮件内容

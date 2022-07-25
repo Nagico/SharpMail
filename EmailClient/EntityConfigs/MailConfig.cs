@@ -18,12 +18,17 @@ public class mailConfig : IEntityTypeConfiguration<Mail>
             .HasColumnName("account_id")
             .IsRequired();
 
+        builder.Property(x => x.Uid)
+            .HasColumnName("uid")
+            .IsRequired();
+
         builder.Property(x => x.Read)
             .HasColumnName("read")
             .HasDefaultValue(false);
         
         builder.Property(x => x.Type)
             .HasColumnName("type")
+            .HasDefaultValue(0)
             .IsRequired();
 
         builder.Property(x => x.Subject)
@@ -34,6 +39,9 @@ public class mailConfig : IEntityTypeConfiguration<Mail>
         
         builder.Property(x => x.To)
             .HasColumnName("to");
+        
+        builder.Property(x => x.Date)
+            .HasColumnName("date");
         
         builder.Property(x => x.Content)
             .HasColumnName("content");

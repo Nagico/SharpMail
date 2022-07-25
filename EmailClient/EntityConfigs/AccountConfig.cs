@@ -25,7 +25,8 @@ public class AccountConfig : IEntityTypeConfiguration<Account>
             .HasColumnName("smtp_host");
 
         builder.Property(x => x.SmtpPort)
-            .HasColumnName("smtp_port");
+            .HasColumnName("smtp_port")
+            .HasDefaultValue(25);
 
         builder.Property(x => x.SmtpSsl)
             .HasColumnName("smtp_ssl")
@@ -35,7 +36,8 @@ public class AccountConfig : IEntityTypeConfiguration<Account>
             .HasColumnName("pop3_host");
         
         builder.Property(x => x.Pop3Port)
-            .HasColumnName("pop3_port");
+            .HasColumnName("pop3_port")
+            .HasDefaultValue(110);
         
         builder.Property(x => x.Pop3Ssl)
             .HasColumnName("pop3_ssl")
