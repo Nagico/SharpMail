@@ -133,4 +133,28 @@ public class MailService
             ["new"] = cnt
         };
     }
+    
+    /// <summary>
+    /// 邮件已读
+    /// </summary>
+    /// <param name="accountId">账户ID</param>
+    /// <param name="id">邮件ID</param>
+    /// <returns>结果</returns>
+    /// <exception cref="AppError">无当前邮件</exception>
+    public async Task<JObject> ReadMail(int accountId, int id)
+    {
+        var mail = await _context.Mails.FirstOrDefaultAsync(m => m.AccountId == accountId && m.Id == id);
+        if (mail == null)
+        {
+            throw new AppError("A0510", "邮件不存在");
+        }
+        
+        mail.Read = true;
+        await _context.SaveChangesAsync();
+
+        return new JObject
+        {
+            ["read"] = true
+        };
+    }
 }

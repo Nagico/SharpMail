@@ -44,6 +44,18 @@ public class MailController : BaseController
     }
     
     /// <summary>
+    /// 手动已读
+    /// </summary>
+    /// <param name="id">邮件ID</param>
+    /// <returns>结果</returns>
+    [HttpPost("{id}/read", Name = "ReadMail")]
+    public async Task<IActionResult> ReadMail(int id)
+    {
+        var res = await _mailService.ReadMail(AccountId, id);
+        return Ok(res);
+    }
+    
+    /// <summary>
     /// 发送邮件
     /// </summary>
     /// <param name="mail">邮件内容</param>
