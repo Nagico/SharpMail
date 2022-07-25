@@ -17,6 +17,10 @@ public class mailConfig : IEntityTypeConfiguration<Mail>
         builder.Property(x => x.AccountId)
             .HasColumnName("account_id")
             .IsRequired();
+
+        builder.Property(x => x.Read)
+            .HasColumnName("read")
+            .HasDefaultValue(false);
         
         builder.Property(x => x.Type)
             .HasColumnName("type")

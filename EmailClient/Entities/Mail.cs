@@ -23,6 +23,11 @@ public class Mail
     public int? Type { get; set; }
     
     /// <summary>
+    /// 已读
+    /// </summary>
+    public bool? Read { get; set; }
+    
+    /// <summary>
     /// 邮件主题
     /// </summary>
     public string? Subject { get; set; }
