@@ -36,10 +36,10 @@ public class MailController : BaseController
     /// </summary>
     /// <param name="id">邮件ID</param>
     /// <returns></returns>
-    [HttpGet("{id}", Name = "GetMail")]
+    [HttpGet("{id}", Name = "GetMailDetail")]
     public async Task<IActionResult> GetMail(int id)
     {
-        var mail = await _mailService.GetMail(AccountId, id);
+        var mail = await _mailService.GetMailDetail(AccountId, id);
         return Ok(mail);
     }
     
@@ -53,6 +53,18 @@ public class MailController : BaseController
     {
         var res = await _mailService.ReadMail(AccountId, id);
         return Ok(res);
+    }
+    
+    /// <summary>
+    /// 删除邮件
+    /// </summary>
+    /// <param name="id">邮件ID</param>
+    /// <returns>204</returns>
+    [HttpDelete("{id}", Name = "DeleteMail")]
+    public async Task<IActionResult> DeleteMail(int id)
+    {
+        await _mailService.DeleteMail(AccountId, id);
+        return NoContent();
     }
     
     /// <summary>
@@ -77,6 +89,6 @@ public class MailController : BaseController
         var result = await _mailService.UpdateMailBox(AccountId);
         return Ok(result);
     }
-    
-    
+
+
 }

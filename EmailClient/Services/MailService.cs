@@ -28,6 +28,16 @@ public class MailService
         _context = context;
         _mailSerializer = new MailSerializer(_context);
     }
+
+    private async Task<Mail> GetMail(int accountId, int id)
+    {
+        var mail = await _context.Mails.FirstOrDefaultAsync(m => m.AccountId == accountId && m.Id == id);
+        if (mail == null)
+        {
+            throw new AppError("A0510", "邮件不存在");
+        }
+        return mail;
+    }
     
     /// <summary>
     /// 获取邮件列表
@@ -57,13 +67,9 @@ public class MailService
     /// <param name="id">邮件ID</param>
     /// <returns>邮件详情</returns>
     /// <exception cref="AppError">无当前ID邮件</exception>
-    public async Task<JObject> GetMail(int accountId, int id)
+    public async Task<JObject> GetMailDetail(int accountId, int id)
     {
-        var mail = await _context.Mails.FirstOrDefaultAsync(m => m.AccountId == accountId && m.Id == id);
-        if (mail == null)
-        {
-            throw new AppError("A0510", "邮件不存在");
-        }
+        var mail = await GetMail(accountId, id);
         
         mail.Read = true;
         await _context.SaveChangesAsync();
@@ -92,49 +98,55 @@ public class MailService
             throw new AppError("A0310", "账户不存在");
         }
 
-        var client = new Pop3Client(account.Email, account.Password!,
-            new ServerUrl(account.Pop3Host!, account.Pop3Port, account.Pop3Ssl));
-        await client.ConnectAsync();
-        var mailCount = await client.GetMailCountAsync();
-
-        var cnt = 0; // 记录新增邮件个数
-        
-        for (var i = mailCount; i > 0; i--)
+        try
         {
-            var mailUid = await client.GetMaidUidAsync(i);
-            if (await _context.Mails.AnyAsync(m => m.AccountId == accountId && m.Uid == mailUid))
+            var client = new Pop3Client(account.Email, account.Password!,
+                new ServerUrl(account.Pop3Host!, account.Pop3Port, account.Pop3Ssl));
+            await client.ConnectAsync();
+            var mailCount = await client.GetMailCountAsync();
+
+            var cnt = 0; // 记录新增邮件个数
+
+            for (var i = mailCount; i > 0; i--)
             {
-                break;
+                var mailUid = await client.GetMaidUidAsync(i);
+                if (await _context.Mails.AnyAsync(m => m.AccountId == accountId && m.Uid == mailUid))
+                {
+                    break;
+                }
+
+                cnt++;
+                var mailContent = await client.GetMailContentAsync(i);
+                var msg = await MimeMessage.LoadAsync(await MailUtil.ToStream(mailContent));
+                var mail = new Mail
+                {
+                    AccountId = accountId,
+                    Uid = mailUid,
+                    Type = 1,
+                    Read = false,
+                    Subject = msg.Subject,
+                    From = _mailSerializer.AddressInfo(msg.From),
+                    To = _mailSerializer.AddressInfo(msg.To),
+                    Content = mailContent,
+                    Date = msg.Date.DateTime,
+                    CreateTime = DateTime.Now
+                };
+
+                await _context.Mails.AddAsync(mail);
             }
 
-            cnt++;
-            var mailContent = await client.GetMailContentAsync(i);
-            var msg = await MimeMessage.LoadAsync(await MailUtil.ToStream(mailContent));
-            var mail = new Mail
-            {
-                AccountId = accountId,
-                Uid = mailUid,
-                Type = 1,
-                Read=false,
-                Subject = msg.Subject,
-                From = _mailSerializer.AddressInfo(msg.From),
-                To = _mailSerializer.AddressInfo(msg.To),
-                Content = mailContent,
-                Date = msg.Date.DateTime,
-                CreateTime = DateTime.Now
-            };
+            await client.DisconnectAsync();
+            await _context.SaveChangesAsync();
             
-            await _context.Mails.AddAsync(mail);
+            return new JObject
+            {
+                ["new"] = cnt
+            };
         }
-        
-        await client.DisconnectAsync();
-        
-        await _context.SaveChangesAsync();
-
-        return new JObject
+        catch (EmailNetException e)
         {
-            ["new"] = cnt
-        };
+            throw new AppError("C0000", e.Message);
+        }
     }
     
     /// <summary>
@@ -146,11 +158,7 @@ public class MailService
     /// <exception cref="AppError">无当前邮件</exception>
     public async Task<JObject> ReadMail(int accountId, int id)
     {
-        var mail = await _context.Mails.FirstOrDefaultAsync(m => m.AccountId == accountId && m.Id == id);
-        if (mail == null)
-        {
-            throw new AppError("A0510", "邮件不存在");
-        }
+        var mail = await GetMail(accountId, id);
         
         mail.Read = true;
         await _context.SaveChangesAsync();
@@ -159,5 +167,34 @@ public class MailService
         {
             ["read"] = true
         };
+    }
+
+    public async Task DeleteMail(int accountId, int id)
+    {
+        var mail = await GetMail(accountId, id);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
+        if (account == null)
+        {
+            throw new AppError("A0310", "账户不存在");
+        }
+
+        try
+        {
+            var client = new Pop3Client(account.Email, account.Password!,
+                new ServerUrl(account.Pop3Host!, account.Pop3Port, account.Pop3Ssl));
+
+            await client.ConnectAsync();
+            await client.DeleteMailAsync(mail.Uid);
+            await client.DisconnectAsync();
+        }
+        catch (EmailNetException e)
+        {
+            throw new AppError("C0000", e.Message);
+        }
+        finally
+        {
+            _context.Mails.Remove(mail);
+            await _context.SaveChangesAsync();
+        }
     }
 }
