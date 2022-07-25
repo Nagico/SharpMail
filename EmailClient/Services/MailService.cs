@@ -36,7 +36,10 @@ public class MailService
     /// <returns>邮件列表</returns>
     public async Task<JArray> GetMailList(int accountId)
     {
-        var mails = await _context.Mails.Where(m => m.AccountId == accountId && m.Type == 1).ToListAsync();
+        var mails = await _context.Mails
+            .Where(m => m.AccountId == accountId && m.Type == 1)
+            .OrderByDescending(m => m.Date)
+            .ToListAsync();
 
         var res = new JArray();
         foreach (var mail in mails)
