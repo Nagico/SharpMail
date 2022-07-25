@@ -12,14 +12,13 @@ public class MailSerializer : BaseSerializer
 
     public static JObject MailInfo(Mail mail)
     {
-        var res = JObject.FromObject(mail);
-
-        res.Remove("type");
-        res.Remove("account_id");
-        res.Remove("to");
-        res.Remove("content");
-        res.Remove("create_time");
-        res.Remove("uid");
+        var res = new JObject
+        {
+            ["id"] = mail.Id,
+            ["from"] = mail.From,
+            ["subject"] = mail.Subject,
+            ["data"] = JObject.FromObject(mail.Date)
+        };
         
         return res;
     }
