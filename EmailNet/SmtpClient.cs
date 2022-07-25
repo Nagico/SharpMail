@@ -93,4 +93,9 @@ public class SmtpClient : BaseClient
         //验证成功，进入连接状态
         State = ClientState.Connected;
     }
+
+    public async Task SendAsync(string content)
+    {
+        throw new NotImplementedException();
+    }
 }

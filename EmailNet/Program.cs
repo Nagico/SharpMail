@@ -1,7 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Text;
+using System.Text.RegularExpressions;
 using EmailNet;
+using HtmlAgilityPack;
 using MimeKit;
+using Newtonsoft.Json.Linq;
 
 async Task<Stream> ToStream(string? text)
 {
@@ -12,6 +16,16 @@ async Task<Stream> ToStream(string? text)
     stream.Position = 0;
     return stream;
 }
+
+async Task<string> ToString2(Stream stream)
+{
+    var reader = new StreamReader(stream);
+    return await reader.ReadToEndAsync();
+}
+
+var path = "h.html";
+var text = File.ReadAllText(path);
+
 
 var email = "co_test1@163.com";
 var password = "ASSKUOTNRNQETWPU";
@@ -24,7 +38,7 @@ await pop3Client.ConnectAsync();
 var count = await pop3Client.GetMailCountAsync();
 Console.WriteLine("You have {0} emails in your inbox.", count);
 
-for (var i = 1; i <= count; i++)
+for (var i = count; i > 0; i--)
 {
     var uid = await pop3Client.GetMaidUidAsync(i);
     var mail = await pop3Client.GetMailContentAsync(i);

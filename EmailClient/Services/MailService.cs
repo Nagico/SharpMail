@@ -78,11 +78,78 @@ public class MailService
 
         return await MailSerializer.MailDetailAsync(mail, msg);
     }
+
+    private string GetMailAddressName(string address)
+    {
+        return address.Split("@")[0];
+    }
     
     public async Task<JObject> SendMail(int accountId, MailViewModel mail)
     {
-        // TODO: 发送邮件
-        throw new NotImplementedException();
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
+        if (account == null)
+        {
+            throw new AppError("A0510", "账户不存在");
+        }
+        
+        var msg = new MimeMessage();
+        msg.From.Add(new MailboxAddress(GetMailAddressName(account.Email), account.Email));
+        foreach (var to in mail.To)
+            msg.To.Add(new MailboxAddress(GetMailAddressName(to), to));
+        
+        foreach (var cc in mail.Cc)
+            msg.Cc.Add(new MailboxAddress(GetMailAddressName(cc), cc));
+        
+        foreach (var bcc in mail.Bcc)
+            msg.Bcc.Add(new MailboxAddress(GetMailAddressName(bcc), bcc));
+        
+        msg.Subject = mail.Subject;
+        
+        var builder = new BodyBuilder();
+        builder.TextBody = MailUtil.HtmlToText(mail.HtmlBody);
+        builder.HtmlBody = mail.HtmlBody;
+        
+        msg.Body = builder.ToMessageBody();
+
+        var streamer = new MemoryStream();
+        await msg.WriteToAsync(streamer);
+        streamer.Position = 0;
+        
+        var mailContent = await MailUtil.ToString(streamer);
+
+        try
+        {
+            var client = new SmtpClient(account.Email, account.Password!,
+                new ServerUrl(account.SmtpHost!, account.SmtpPort, account.SmtpSsl));
+            await client.ConnectAsync();
+            await client.SendAsync(mailContent);
+            await client.DisconnectAsync();
+            
+            var newMail = new Mail
+            {
+                AccountId = accountId,
+                Uid = "",
+                Type = 2,  // 已发送
+                Read = true,
+                Subject = msg.Subject,
+                From = _mailSerializer.AddressInfo(msg.From),
+                To = _mailSerializer.AddressInfo(msg.To),
+                Content = mailContent,
+                Date = msg.Date.DateTime,
+                CreateTime = DateTime.Now
+            };
+            _context.Mails.Add(newMail);
+            await _context.SaveChangesAsync();
+
+            return new JObject
+            {
+                ["status"] = "success"
+            };
+        }
+        catch (EmailNetException e)
+        {
+            throw new AppError("C0000", "发送邮件失败", e.Message);
+        }
     }
     
     /// <summary>
@@ -122,7 +189,7 @@ public class MailService
                 {
                     AccountId = accountId,
                     Uid = mailUid,
-                    Type = 1,
+                    Type = 1,  // 收件箱
                     Read = false,
                     Subject = msg.Subject,
                     From = _mailSerializer.AddressInfo(msg.From),
@@ -168,7 +235,13 @@ public class MailService
             ["read"] = true
         };
     }
-
+    
+    /// <summary>
+    /// 删除邮件
+    /// </summary>
+    /// <param name="accountId">账户ID</param>
+    /// <param name="id">邮件ID</param>
+    /// <exception cref="AppError">无当前邮件</exception>
     public async Task DeleteMail(int accountId, int id)
     {
         var mail = await GetMail(accountId, id);
