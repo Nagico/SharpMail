@@ -1,4 +1,5 @@
-﻿using EmailClient.Entities;
+﻿using System.Collections;
+using EmailClient.Entities;
 using EmailClient.Utils;
 using MimeKit;
 using Newtonsoft.Json.Linq;
@@ -58,6 +59,21 @@ public class MailSerializer : BaseSerializer
         return res;
     }
 
+    public string AddressInfo(InternetAddressList addressList)
+    {
+        var res = new List<string>();
+        
+        foreach (var address in addressList)
+        {
+            if (address is MailboxAddress mailboxAddress)
+            {
+                res.Add(string.IsNullOrEmpty(mailboxAddress.Name) ? mailboxAddress.Address : mailboxAddress.Name);
+            }
+        }
+        
+        return string.Join(", ", res);
+    }
+    
     private static JArray AddressList(InternetAddressList addresses)
     {
         var res = new JArray();

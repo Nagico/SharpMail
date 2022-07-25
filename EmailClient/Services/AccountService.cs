@@ -87,15 +87,15 @@ public class AccountService
         if (SmtpHost != null)
             account.SmtpHost = SmtpHost;
         if (SmtpPort != null)
-            account.SmtpPort = SmtpPort;
+            account.SmtpPort = SmtpPort.Value;
         if (SmtpSsl != null)
-            account.SmtpSsl = SmtpSsl;
+            account.SmtpSsl = SmtpSsl.Value;
         if (Pop3Host != null)
             account.Pop3Host = Pop3Host;
         if (Pop3Port != null)
-            account.Pop3Port = Pop3Port;
+            account.Pop3Port = Pop3Port.Value;
         if (Pop3Ssl != null)
-            account.Pop3Ssl = Pop3Ssl;
+            account.Pop3Ssl = Pop3Ssl.Value;
         
         account.UpdateTime = DateTime.Now;
         
