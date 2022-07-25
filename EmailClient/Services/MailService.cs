@@ -121,8 +121,10 @@ public class MailService
             await _context.Mails.AddAsync(mail);
         }
         
-        await _context.SaveChangesAsync();
+        await client.DisconnectAsync();
         
+        await _context.SaveChangesAsync();
+
         return new JObject
         {
             ["new"] = cnt
