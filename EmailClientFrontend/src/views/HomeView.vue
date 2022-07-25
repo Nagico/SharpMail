@@ -9,7 +9,7 @@
     </el-header>
     <el-container>
       <el-aside width="250px">
-        <el-menu default-active="/home/inbox" router class="">
+        <el-menu :default-active="route.path" router class="">
           <el-menu-item index="/home/draft">
             <el-icon><i-ep-editPen /></el-icon>
             <span>写邮件</span>
@@ -40,6 +40,7 @@ import { logout } from "@/api/user";
 import { showSuccessPrompt } from "@/utils/MyPrompt";
 
 const router = useRouter();
+const route = useRoute();
 
 const email = ref(localStorage.getItem("email") || "您未登录");
 
@@ -70,5 +71,11 @@ const handleLogout = () => {
 
 .el-menu {
   height: 100%;
+}
+
+:deep(h2) {
+  margin-bottom: 20px;
+  text-align: left;
+  font-weight: 500;
 }
 </style>

@@ -64,3 +64,20 @@ export function config(smtpHost, smtpPort, smtpSsl, pop3Host, pop3Port, pop3Ssl)
       });
   });
 }
+
+/**
+ * 获取配置信息
+ * @returns {Promise} 获取配置Promise
+ */
+export function getConfig() {
+  return new Promise((resolve, reject) => {
+    http
+      .get("/accounts")
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(err => {
+        reject(err.response ? err.response.data.detail : err.message);
+      });
+  });
+}
