@@ -17,7 +17,7 @@ public class MailSerializer : BaseSerializer
         res.Remove("type");
         res.Remove("account_id");
         res.Remove("to");
-        res.Remove("Content");
+        res.Remove("content");
         
         return res;
     }
