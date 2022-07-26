@@ -151,6 +151,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("cors");
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseApiExceptionHandler();
 
 app.UseHttpsRedirection();

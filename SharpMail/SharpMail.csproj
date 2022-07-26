@@ -28,4 +28,8 @@
       <ProjectReference Include="..\SharpMail.Net\SharpMail.Net.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot" />
+    </ItemGroup>
+
 </Project>
