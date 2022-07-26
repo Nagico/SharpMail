@@ -1,4 +1,5 @@
-﻿using SharpMail.Net;
+﻿using Microsoft.AspNetCore.Http.Features;
+using SharpMail.Net;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using Newtonsoft.Json.Linq;
@@ -38,28 +39,89 @@ public class MailService
         }
         return mail;
     }
-    
+
     /// <summary>
     /// 获取邮件列表
     /// </summary>
     /// <param name="accountId">账户ID</param>
-    /// <returns>邮件列表</returns>
-    public async Task<JArray> GetMailList(int accountId)
+    /// <param name="type">筛选类型 1-收件 2-发件</param>
+    /// <param name="read">筛选是否已读</param>
+    /// <param name="orderBy">排序条件</param>
+    /// <param name="page">页数</param>
+    /// <param name="pageSize">分页</param>
+    /// <returns>邮件总数, 邮件列表</returns>
+    public async Task<(int, JArray)> GetMailList(int accountId, int? type, bool? read, string? orderBy, int page, int pageSize)
     {
-        var mails = await _context.Mails
-            .Where(m => m.AccountId == accountId && m.Type == 1)
-            .OrderByDescending(m => m.Date)
-            .ToListAsync();
+        var mails = BuildQuery(_context.Mails.Where(m => m.AccountId == accountId), type, read, orderBy);
+        var total = await mails.CountAsync();
+        var mailList = await mails.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        
 
         var res = new JArray();
-        foreach (var mail in mails)
+        foreach (var mail in mailList)
         {
             res.Add(MailSerializer.MailInfo(mail));
         }
         
-        return res;
+        return (total, res);
     }
     
+    /// <summary>
+    /// 获取未读邮件总数
+    /// </summary>
+    /// <param name="accountId">账户ID</param>
+    /// <returns>未读邮件总数</returns>
+    public async Task<int> GetUnreadMailCount(int accountId)
+    {
+        return await _context.Mails.CountAsync(m => m.AccountId == accountId && m.Read == false);
+    }
+
+    private IQueryable<Mail> BuildQuery(IQueryable<Mail> mails, int? type, bool? read, string? orderBy)
+    {
+        if (type.HasValue)
+        {
+            mails = mails.Where(m => m.Type == type.Value);
+        }
+        
+        if (read.HasValue)
+        {
+            mails = mails.Where(m => m.Read == read.Value);
+        }
+        
+        // 排序
+        if (!string.IsNullOrWhiteSpace(orderBy))
+        {
+            var orderByList = orderBy!.Split(',').ToList().ConvertAll(s => s.Trim());
+            foreach (var order in orderByList)
+            {
+                var asc = true;
+                var orderField = order;
+                
+                // 处理排序方式
+                if (order.StartsWith('-'))
+                {
+                    asc = false;
+                    orderField = order[1..];
+                }
+
+                mails = orderField switch
+                {
+                    "date" => asc ? mails.OrderBy(m => m.Date) : mails.OrderByDescending(m => m.Date),
+                    "subject" => asc ? mails.OrderBy(m => m.Subject) : mails.OrderByDescending(m => m.Subject),
+                    "from" => asc ? mails.OrderBy(m => m.From) : mails.OrderByDescending(m => m.From),
+                    "to" => asc ? mails.OrderBy(m => m.To) : mails.OrderByDescending(m => m.To),
+                    _ => mails
+                };
+            }
+        }
+        else
+        {
+            mails = mails.OrderByDescending(m => m.Date);
+        }
+
+        return mails;
+    }
+
     /// <summary>
     /// 获取邮件详情
     /// </summary>

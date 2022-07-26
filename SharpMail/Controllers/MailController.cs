@@ -23,14 +23,37 @@ public class MailController : BaseController
     /// <summary>
     /// 获取邮件列表
     /// </summary>
-    /// <returns>邮件列表</returns>
+    /// <param name="type">筛选类型 1-收件 2-发件</param>
+    /// <param name="read">筛选是否已读</param>
+    /// <param name="orderBy">排序条件</param>
+    /// <param name="page">页数=1</param>
+    /// <param name="pageSize">分页=10</param>
+    /// <returns></returns>
     [HttpGet(Name = "GetMailList")]
-    public async Task<IActionResult> GetMailList()
+    public async Task<IActionResult> GetMailList(int type, bool? read, string? orderBy, int? page, int? pageSize)
     {
-        var mails = await _mailService.GetMailList(AccountId);
-        return Ok(mails);
+        var pageR = page ?? 1;
+        var pageSizeR = pageSize ?? 10;
+        var (total, mails) = await _mailService.GetMailList(AccountId, type, read, orderBy, pageR, pageSizeR);
+        var totalPage = total / pageSizeR;
+        if (total % pageSizeR != 0)
+        {
+            totalPage++;
+        }
+        
+        var result = new
+        {
+            total,
+            totalPage,
+            page = pageR,
+            pageSize = pageSizeR,
+            unread = await _mailService.GetUnreadMailCount(AccountId),
+            data = mails
+        };
+        
+        return Ok(result);
     }
-    
+
     /// <summary>
     /// 获取邮件
     /// </summary>
