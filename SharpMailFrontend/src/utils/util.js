@@ -57,21 +57,3 @@ export function dateDiff(start, end = new Date()) {
   let endDate = Date.parse(start);
   return (startDate - endDate) / 1000 / 86400;
 }
-
-/**
- * 获取指定范围的随机数
- * @param {Number} min 下限（默认为0）
- * @param {Number} max 上限（默认为1）
- */
-export function rand(min = 0, max = 1) {
-  return min + Math.random() * (max - min);
-}
-
-/**
- * 获取指定范围的随机整数
- * @param {Number} min 下限（默认为0）
- * @param {Number} max 上限（默认为1）
- */
-export function randInt(min = 0, max = 1) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
