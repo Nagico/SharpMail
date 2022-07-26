@@ -1,39 +1,39 @@
 ﻿namespace SharpMail.Net;
 
-public class EmailNetException : Exception
+public class SharpMailNetException : Exception
 {
-    public EmailNetException(string message) : base(message)
+    public SharpMailNetException(string message) : base(message)
     {
     }
 
-    public EmailNetException(string message, Exception inner) : base(message, inner)
+    public SharpMailNetException(string message, Exception inner) : base(message, inner)
     {
     }
 }
 
-public class EmailNetConnectException : EmailNetException
+public class SharpMailNetConnectException : SharpMailNetException
 {
-    public EmailNetConnectException(string message) : base(message)
+    public SharpMailNetConnectException(string message) : base(message)
     {
     }
 
-    public EmailNetConnectException(string message, Exception inner) : base(message, inner)
+    public SharpMailNetConnectException(string message, Exception inner) : base(message, inner)
     {
     }
 }
 
-public class EmailNetStateException : EmailNetException
+public class SharpMailNetStateException : SharpMailNetException
 {
-    public EmailNetStateException(string message) : base(message)
+    public SharpMailNetStateException(string message) : base(message)
     {
     }
 
-    public EmailNetStateException(string message, Exception inner) : base(message, inner)
+    public SharpMailNetStateException(string message, Exception inner) : base(message, inner)
     {
     }
 }
 
-public class Pop3Exception : EmailNetException
+public class Pop3Exception : SharpMailNetException
 {
     public Pop3Exception(string message) : base(message)
     {
@@ -66,7 +66,7 @@ public class Pop3ConnectException : Pop3Exception
     }
 }
 
-public class SmtpException : EmailNetException
+public class SmtpException : SharpMailNetException
 {
     public SmtpException(string message) : base(message)
     {

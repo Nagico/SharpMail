@@ -37,6 +37,8 @@ public abstract class BaseClient
     protected readonly NetworkStream _streamWriter;  //写,发送命令
     protected readonly StreamReader _streamReader;   //读
     public ClientState State { get; set; } //当前连接状态
+    
+    private static int TIMEOUT = 2000; //超时时间
 
     protected BaseClient(string email, string password, ServerUrl server)
     {
@@ -49,11 +51,12 @@ public abstract class BaseClient
             _client = new TcpClient(server.Host, server.Port);
             _streamWriter = _client.GetStream();
             _streamReader = new StreamReader(_client.GetStream());
+            _streamReader.BaseStream.ReadTimeout = TIMEOUT;
         }
         catch (Exception e)
         {
             State = ClientState.Unconnected;
-            throw new EmailNetConnectException("创建连接失败", e);
+            throw new SharpMailNetConnectException("创建连接失败", e);
         }
 
         State = ClientState.Unconnected;
@@ -130,10 +133,10 @@ public abstract class BaseClient
     /// <summary>
     /// 检查连接状态
     /// </summary>
-    /// <exception cref="EmailNetStateException">未连接</exception>
+    /// <exception cref="SharpMailNetStateException">未连接</exception>
     protected void CheckState()
     {
-        if (State != ClientState.Connected) throw new EmailNetStateException("未连接");
+        if (State != ClientState.Connected) throw new SharpMailNetStateException("未连接");
     }
 
     /// <summary>
@@ -152,8 +155,14 @@ public abstract class BaseClient
     /// <returns>第一行数据</returns>
     protected async Task<string> ReceiveFirstLineAsync()
     {
-        var line = await _streamReader.ReadLineAsync();
-        return line ?? string.Empty;
+        // var task = _streamReader.ReadLineAsync();
+        // var res = task.Wait(TIMEOUT);
+        //
+        // if (!res)
+        //     return string.Empty;
+        //
+        // return task.Result ?? string.Empty;
+        return ReceiveFirstLine();
     }
     
     /// <summary>
