@@ -30,7 +30,14 @@ public class MailService
         _context = context;
         _mailSerializer = new MailSerializer(_context);
     }
-
+    
+    /// <summary>
+    /// 获取邮件对象
+    /// </summary>
+    /// <param name="accountId">账户ID</param>
+    /// <param name="id">邮件ID</param>
+    /// <returns>Mail对象</returns>
+    /// <exception cref="AppError">无当前邮件</exception>
     private async Task<Mail> GetMail(int accountId, int id)
     {
         var mail = await _context.Mails.FirstOrDefaultAsync(m => m.AccountId == accountId && m.Id == id);
@@ -76,7 +83,7 @@ public class MailService
     {
         return await _context.Mails.CountAsync(m => m.AccountId == accountId && m.Read == false);
     }
-
+    
     private IQueryable<Mail> BuildQuery(IQueryable<Mail> mails, int? type, bool? read, string? orderBy)
     {
         if (type.HasValue)
@@ -147,6 +154,13 @@ public class MailService
         return address.Split("@")[0];
     }
     
+    /// <summary>
+    /// 发送邮件
+    /// </summary>
+    /// <param name="accountId">账户ID</param>
+    /// <param name="mail">待发送邮件内容</param>
+    /// <returns>已发送邮件ID</returns>
+    /// <exception cref="AppError">发送失败</exception>
     public async Task<JObject> SendMail(int accountId, MailViewModel mail)
     {
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
@@ -215,7 +229,7 @@ public class MailService
 
             return new JObject
             {
-                ["status"] = "success"
+                ["id"] = newMail.Id
             };
         }
         catch (SharpMailNetException e)
@@ -225,7 +239,7 @@ public class MailService
     }
     
     /// <summary>
-    /// 更新邮箱
+    /// 拉取新邮件
     /// </summary>
     /// <param name="accountId">账户ID</param>
     /// <returns>更新结果</returns>
