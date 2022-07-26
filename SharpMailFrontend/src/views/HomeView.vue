@@ -4,7 +4,7 @@
       <h1>SharpMail</h1>
       <div class="user">
         <span>{{ email }}</span>
-        <el-button @click="handleLogout">退出</el-button>
+        <el-button @click="handleLogout" type="primary">退出</el-button>
       </div>
     </el-header>
     <el-container>
@@ -52,11 +52,16 @@ const handleLogout = () => {
 </script>
 
 <style lang="less" scoped>
+:deep(.el-main) {
+  --el-main-padding: 0 !important;
+}
+
 .el-header {
   background-color: var(--el-color-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #fff;
 
   h1 {
     font-weight: normal;
