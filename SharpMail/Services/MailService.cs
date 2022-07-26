@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using System.Text;
+using Microsoft.AspNetCore.Http.Features;
 using SharpMail.Net;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
@@ -159,32 +160,41 @@ public class MailService
         foreach (var to in mail.To)
             msg.To.Add(new MailboxAddress(GetMailAddressName(to), to));
         
-        foreach (var cc in mail.Cc)
+        foreach (var cc in mail.Cc ?? new List<string>())
             msg.Cc.Add(new MailboxAddress(GetMailAddressName(cc), cc));
         
-        foreach (var bcc in mail.Bcc)
+        foreach (var bcc in mail.Bcc ?? new List<string>())
             msg.Bcc.Add(new MailboxAddress(GetMailAddressName(bcc), bcc));
         
         msg.Subject = mail.Subject;
+
+        var html = new TextPart("html");
+        html.Text = mail.HtmlBody;
+        html.ContentTransferEncoding = ContentEncoding.Base64;
         
-        var builder = new BodyBuilder();
-        builder.TextBody = MailUtil.HtmlToText(mail.HtmlBody);
-        builder.HtmlBody = mail.HtmlBody;
+        var plain = new TextPart("plain");
+        plain.Text = MailUtil.HtmlToText(mail.HtmlBody);
+        plain.ContentTransferEncoding = ContentEncoding.Base64;
         
-        msg.Body = builder.ToMessageBody();
+        var multipart = new Multipart("mixed");
+        //multipart.Add(plain);
+        multipart.Add(html);
+        
+        msg.Body = multipart;
 
         var streamer = new MemoryStream();
         await msg.WriteToAsync(streamer);
         streamer.Position = 0;
         
         var mailContent = await MailUtil.ToString(streamer);
+        var receivers = mail.To.Concat(mail.Cc ?? new List<string>()).Concat(mail.Bcc ?? new List<string>()).ToList();
 
         try
         {
             var client = new SmtpClient(account.Email, account.Password!,
                 new ServerUrl(account.SmtpHost!, account.SmtpPort, account.SmtpSsl));
             await client.ConnectAsync();
-            await client.SendAsync(mailContent);
+            await client.SendAsync(receivers, mailContent);
             await client.DisconnectAsync();
             
             var newMail = new Mail

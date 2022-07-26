@@ -11,12 +11,10 @@ namespace SharpMail.Controllers;
 [Authorize]
 public class MailController : BaseController
 {
-    private readonly AccountService _accountService;
     private readonly MailService _mailService;
     
     public MailController(IConfiguration configuration, EmailClientContext context)
     {
-        _accountService = new AccountService(configuration, context);
         _mailService = new MailService(configuration, context);
     }
     

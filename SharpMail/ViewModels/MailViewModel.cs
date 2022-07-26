@@ -9,11 +9,11 @@ public class MailViewModel
     /// <summary>
     /// 抄送列表
     /// </summary>
-    public List<string> Cc { get; set; }
+    public List<string>? Cc { get; set; }
     /// <summary>
     /// 密送列表
     /// </summary>
-    public List<string> Bcc { get; set; }
+    public List<string>? Bcc { get; set; }
     /// <summary>
     /// 主题
     /// </summary>

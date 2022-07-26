@@ -70,4 +70,11 @@ public static class MailUtil
     
         return res;
     }
+    
+    public static string ToGbk(string text)
+    {
+        var bs = Encoding.GetEncoding("UTF-8").GetBytes(text);
+        bs = Encoding.Convert(Encoding.GetEncoding("UTF-8"), Encoding.GetEncoding("GBK"), bs);
+        return Encoding.GetEncoding("GBK").GetString(bs);
+    }
 }
