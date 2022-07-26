@@ -1,5 +1,12 @@
 <template>
-  <el-table :data="tableData" v-loading="loading" ref="table">
+  <el-table
+    :data="tableData"
+    v-loading="loading"
+    ref="table"
+    row-key="id"
+    @row-click="handleRowClick"
+    row-class-name="list-item"
+  >
     <el-table-column type="selection" width="55" />
     <el-table-column prop="from" label="发件人" width="200" v-if="type == 'inbox'" />
     <el-table-column prop="to" label="收件人" width="200" v-else-if="type == 'sent'" />
@@ -9,7 +16,7 @@
         <span>{{ formatTime(scope.row.date) }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="read" label="已读" width="60">
+    <el-table-column prop="read" label="已读" width="60" v-if="type == 'inbox'">
       <template #default="scope">
         <el-icon v-if="scope.row.read"><i-ep-circleCheckFilled /></el-icon>
         <span v-else></span>
@@ -25,12 +32,17 @@
     @current-change="handleCurrentChange"
     @size-change="handleSizeChange"
   />
+  <!-- 阅读对话框 -->
+  <el-dialog v-model="dialogVisible" :title="currentMail.subject">
+    <MailDetail :mail-item="currentMail" />
+  </el-dialog>
 </template>
 
 <script setup>
 import * as mailAPI from "@/api/mail.js";
 import { showSuccessPrompt, showErrorPrompt } from "@/utils/MyPrompt";
 import { formatTime } from "@/utils/util";
+import MailDetail from "@/components/MailDetail.vue";
 
 const props = defineProps({
   type: {
@@ -98,6 +110,17 @@ const performDelete = () => {
   }
 };
 
+const dialogVisible = ref(false);
+const currentMail = ref({
+  subject: "",
+});
+
+const handleRowClick = row => {
+  // 在这里获取邮件详情，然后设置到currentMail中，再使用下面的dialogVisible.value = true显示对话框
+  dialogVisible.value = true;
+  currentMail.value = row;
+};
+
 onMounted(() => {
   loadList();
   performFetchMail()
@@ -118,5 +141,9 @@ defineExpose({ tableData, loadList, performFetchMail, performDelete });
 .el-pagination {
   justify-content: center;
   margin: 8px 0;
+}
+
+.list-item {
+  cursor: pointer;
 }
 </style>

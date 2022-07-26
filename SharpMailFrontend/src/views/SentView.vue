@@ -1,7 +1,7 @@
 <template>
   <div class="operations">
     <el-button @click="handleManuallyFetchMail" type="primary" :loading="fetching">
-      <el-icon class="el-icon--left" v-if="!fetching"><i-ep-refresh /></el-icon>收取新邮件
+      <el-icon class="el-icon--left" v-if="!fetching"><i-ep-refresh /></el-icon>同步邮件
     </el-button>
     <el-popconfirm title="确认要删除这些邮件吗？此操作不可撤销" @confirm="handleDelete">
       <template #reference>
