@@ -16,7 +16,7 @@
         <span>{{ formatTime(scope.row.date) }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="read" label="已读" width="60">
+    <el-table-column prop="read" label="已读" width="60" v-if="type == 'inbox'">
       <template #default="scope">
         <el-icon v-if="scope.row.read"><i-ep-circleCheckFilled /></el-icon>
         <span v-else></span>
