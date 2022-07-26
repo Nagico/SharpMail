@@ -17,20 +17,15 @@ async Task<Stream> ToStream(string? text)
     return stream;
 }
 
-async Task<string> ToString2(Stream stream)
-{
-    var reader = new StreamReader(stream);
-    return await reader.ReadToEndAsync();
-}
-
-var path = "h.html";
-var text = File.ReadAllText(path);
-
 
 var email = "co_test1@163.com";
 var password = "ASSKUOTNRNQETWPU";
-var pop3Server = new ServerUrl("pop3.163.com", 110);
-var smtpServer = new ServerUrl("smtp.163.com", 25);
+
+// email = "co_test2@163.com";
+// password = ""
+
+var pop3Server = new ServerUrl("pop3.163.com", 995, true);
+var smtpServer = new ServerUrl("smtp.163.com", 465, true);
 
 var pop3Client = new Pop3Client(email, password, pop3Server);
 await pop3Client.ConnectAsync();
@@ -47,8 +42,6 @@ for (var i = count; i > 0; i--)
 }
 
 await pop3Client.DisconnectAsync();
-
-
 
 
 var smtpClient = new SmtpClient(email, password, smtpServer);

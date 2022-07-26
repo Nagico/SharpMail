@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using System;
+using System.Net.Security;
 
 namespace SharpMail.Net;
 
@@ -34,7 +35,7 @@ public abstract class BaseClient
     protected readonly ServerUrl server;
     
     protected readonly TcpClient _client;   //客户端
-    protected readonly NetworkStream _streamWriter;  //写,发送命令
+    protected readonly Stream _streamWriter;  //写,发送命令
     protected readonly StreamReader _streamReader;   //读
     public ClientState State { get; set; } //当前连接状态
     
@@ -48,10 +49,25 @@ public abstract class BaseClient
         
         try
         {
-            _client = new TcpClient(server.Host, server.Port);
-            _streamWriter = _client.GetStream();
-            _streamReader = new StreamReader(_client.GetStream());
-            _streamReader.BaseStream.ReadTimeout = TIMEOUT;
+            if (!server.UseSsl)
+            {
+                _client = new TcpClient(server.Host, server.Port);
+                _streamWriter = _client.GetStream();
+                _streamReader = new StreamReader(_client.GetStream());
+                _streamReader.BaseStream.ReadTimeout = TIMEOUT;
+            }
+            else
+            {
+                _client = new TcpClient(server.Host, server.Port);
+                
+                var sslStream = new SslStream(_client.GetStream(), false);
+                sslStream.AuthenticateAsClient(server.Host);
+                
+                _streamWriter = sslStream;
+                
+                _streamReader = new StreamReader(sslStream);
+                _streamReader.BaseStream.ReadTimeout = TIMEOUT;
+            }
         }
         catch (Exception e)
         {
