@@ -218,7 +218,7 @@ public class MailService
                 ["status"] = "success"
             };
         }
-        catch (EmailNetException e)
+        catch (SharpMailNetException e)
         {
             throw new AppError("C0000", "发送邮件失败", e.Message);
         }
@@ -282,7 +282,7 @@ public class MailService
                 ["new"] = cnt
             };
         }
-        catch (EmailNetException e)
+        catch (SharpMailNetException e)
         {
             throw new AppError("C0000", e.Message);
         }
@@ -332,7 +332,7 @@ public class MailService
             await client.DeleteMailAsync(mail.Uid);
             await client.DisconnectAsync();
         }
-        catch (EmailNetException e)
+        catch (SharpMailNetException e)
         {
             throw new AppError("C0000", e.Message);
         }

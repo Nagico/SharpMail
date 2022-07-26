@@ -28,7 +28,7 @@ public class AccountController : BaseController
         var account = await _accountService.GetAccountDetail(AccountId);
         return Ok(account);
     }
-    
+
     /// <summary>
     /// 更新当前用户信息
     /// </summary>

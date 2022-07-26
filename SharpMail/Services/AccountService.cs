@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using SharpMail.Entities;
 using SharpMail.Exceptions;
 using SharpMail.Services.Serializers;
+using SharpMail.Utils;
 
 namespace SharpMail.Services;
 
@@ -42,7 +43,16 @@ public class AccountService
     public async Task<JObject> GetAccountDetail(int id)
     {
         var account = await GetAccount(id);
-        return _accountSerializer.AccountDetail(account);
+        
+        var isConnected = await AuthUtil.Auth(account.Email, account.Password!,
+            account.Pop3Host, account.Pop3Port, account.Pop3Ssl, 
+            account.SmtpHost, account.SmtpPort, account.SmtpSsl);
+
+        var res = _accountSerializer.AccountDetail(account);
+        
+        res.Add("is_connected", isConnected);
+        
+        return res;
     }
     
     
@@ -101,6 +111,6 @@ public class AccountService
         
         await _context.SaveChangesAsync();
         
-        return _accountSerializer.AccountDetail(account);
+        return await GetAccountDetail(id);
     }
 }

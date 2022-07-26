@@ -24,9 +24,9 @@ public class AuthenticateController : BaseController
     /// <returns>token及用户信息</returns>
     [AllowAnonymous]
     [HttpPost("login", Name = "Login")]
-    public ActionResult<AuthenticateViewModel> Login([FromBody] LoginViewModel loginViewModel)
+    public async Task<ActionResult<AuthenticateViewModel>> Login([FromBody] LoginViewModel loginViewModel)
     {
-        var result = _service.Login(loginViewModel.Email, loginViewModel.Password);
+        var result = await _service.Login(loginViewModel.Email, loginViewModel.Password);
         return result;
     }
 }

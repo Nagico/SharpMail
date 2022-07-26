@@ -1,9 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SharpMail.Entities;
 using SharpMail.Exceptions;
+using SharpMail.Utils;
 using SharpMail.ViewModels;
 
 namespace SharpMail.Services;
@@ -15,8 +17,7 @@ public class AuthenticateService
 {
     private readonly IConfiguration _configuration;
     private readonly EmailClientContext _context;
-    private readonly string _salt;
-    
+
     public AuthenticateService(IConfiguration configuration, EmailClientContext EmailClientContext)
     {
         _configuration = configuration;
@@ -31,7 +32,7 @@ public class AuthenticateService
     /// <param name="password">登录密码</param>
     /// <returns>token及用户数据</returns>
     /// <exception cref="AppError">登陆失败</exception>
-    public AuthenticateViewModel Login(string email, string password)
+    public async Task<AuthenticateViewModel> Login(string email, string password)
     {
         // 参数校验
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
@@ -43,16 +44,22 @@ public class AuthenticateService
         // 用户不存在
         if (account == null)
         {
-            return Register(email, password);
+            return await Register(email, password);
         }
 
-        // 生成token
+        var isConnected = account.IsActive;
+        if (isConnected)
+            isConnected = await AuthUtil.Auth(email, password,
+            account.Pop3Host, account.Pop3Port, account.Pop3Ssl, 
+            account.SmtpHost, account.SmtpPort, account.SmtpSsl);
+
+            // 生成token
         var token = GenerateJwt(account);
         
         // 修改用户登录时间，记录密码
         account.LastLoginTime = DateTime.Now;
         account.Password = password;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         
         // 返回结果
         return new AuthenticateViewModel
@@ -60,7 +67,8 @@ public class AuthenticateService
             Id = account.Id,
             IsActive = account.IsActive,
             Email = email,
-            Token = token
+            Token = token,
+            IsConnected = isConnected
         };
     }
     
@@ -71,10 +79,10 @@ public class AuthenticateService
     /// <param name="password">登录密码</param>
     /// <returns>token及用户信息</returns>
     /// <exception cref="AppError">注册失败</exception>
-    private AuthenticateViewModel Register(string email, string password)
+    private async Task<AuthenticateViewModel> Register(string email, string password)
     {
         // 用户名已存在
-        if (AccountCount(email) > 0)
+        if (await AccountCount(email) > 0)
             throw new AppError("A0111", "邮箱地址已存在，请直接登录");
         
         // 新用户
@@ -90,7 +98,7 @@ public class AuthenticateService
         
         // 添加用户
         _context.Accounts.Add(newAccount);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         
         // 生成token
         var token = GenerateJwt(newAccount);
@@ -110,9 +118,9 @@ public class AuthenticateService
     /// </summary>
     /// <param name="email">邮箱账户</param>
     /// <returns>数量</returns>
-    private int AccountCount(string email)
+    private async Task<int> AccountCount(string email)
     {
-        return _context.Accounts.Count(u => u.Email == email);
+        return await _context.Accounts.CountAsync(u => u.Email == email);
     }
     
     /// <summary>
