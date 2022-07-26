@@ -1,7 +1,8 @@
 <template>
   <el-table :data="tableData" v-loading="loading">
     <el-table-column type="selection" width="55" />
-    <el-table-column prop="from" label="发件人" width="200" />
+    <el-table-column prop="from" label="发件人" width="200" v-if="type == 'inbox'" />
+    <el-table-column prop="to" label="收件人" width="200" v-else-if="type == 'sent'" />
     <el-table-column prop="subject" label="主题" />
     <el-table-column label="发送时间" width="160">
       <template #default="scope">

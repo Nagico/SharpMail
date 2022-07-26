@@ -17,6 +17,7 @@
           <el-menu-item index="/home/inbox">
             <el-icon><i-ep-download /></el-icon>
             <span>收件箱</span>
+            <!-- <span class="badge" v-if="unreadCount > 0">{{ unreadCount }}</span> -->
           </el-menu-item>
           <el-menu-item index="/home/sent">
             <el-icon><i-ep-upload /></el-icon>
@@ -43,6 +44,8 @@ const router = useRouter();
 const route = useRoute();
 
 const email = ref(localStorage.getItem("email") || "您未登录");
+
+// const unreadCount = ref(0);
 
 const handleLogout = () => {
   logout();
@@ -83,4 +86,16 @@ const handleLogout = () => {
   text-align: left;
   font-weight: 500;
 }
+
+// :deep(.badge) {
+//   background-color: var(--el-color-primary);
+//   color: #fff;
+//   line-height: 16px;
+//   border-radius: 8px;
+//   padding: 0 5px;
+//   font-size: 12px;
+//   font-weight: 500;
+//   text-align: center;
+//   margin-left: 8px;
+// }
 </style>
