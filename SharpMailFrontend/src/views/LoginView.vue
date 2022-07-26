@@ -148,8 +148,6 @@ const handleAction = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
