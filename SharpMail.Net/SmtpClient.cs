@@ -94,7 +94,7 @@ public class SmtpClient : BaseClient
         State = ClientState.Connected;
     }
 
-    public async Task SendAsync(string content)
+    public async Task SendAsync(List<string> receivers, string content)
     {
         throw new NotImplementedException();
     }
