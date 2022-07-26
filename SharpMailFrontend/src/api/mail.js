@@ -54,3 +54,21 @@ export function setRead(id) {
       });
   });
 }
+
+/**
+ * 删除邮件
+ * @param {Number} id 邮件id
+ * @returns 删除结果Promise
+ */
+export function deleteMail(id) {
+  return new Promise((resolve, reject) => {
+    http
+      .delete(`/mails/${id}`)
+      .then(() => {
+        resolve();
+      })
+      .catch(err => {
+        reject(err.response ? err.response.data.detail : err.message);
+      });
+  });
+}

@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" v-loading="loading">
+  <el-table :data="tableData" v-loading="loading" ref="table">
     <el-table-column type="selection" width="55" />
     <el-table-column prop="from" label="发件人" width="200" v-if="type == 'inbox'" />
     <el-table-column prop="to" label="收件人" width="200" v-else-if="type == 'sent'" />
@@ -17,7 +17,8 @@
     </el-table-column>
   </el-table>
   <el-pagination
-    layout="sizes, prev, pager, next, jumper"
+    v-if="tableData.length > 0"
+    layout="total, sizes, prev, pager, next, jumper"
     :total="total"
     v-model:current-page="currentPage"
     v-model:page-size="pageSize"
@@ -28,7 +29,7 @@
 
 <script setup>
 import * as mailAPI from "@/api/mail.js";
-import { showErrorPrompt } from "@/utils/MyPrompt";
+import { showSuccessPrompt, showErrorPrompt } from "@/utils/MyPrompt";
 import { formatTime } from "@/utils/util";
 
 const props = defineProps({
@@ -39,6 +40,7 @@ const props = defineProps({
 });
 
 const loading = ref(true);
+const table = ref(null);
 const tableData = ref([]);
 const total = ref(0);
 const currentPage = ref(1);
@@ -61,7 +63,7 @@ const loadList = page => {
     });
 };
 
-const handleFetchMail = () => {
+const performFetchMail = () => {
   return new Promise((resolve, reject) => {
     mailAPI
       .fetchMail()
@@ -83,9 +85,22 @@ const handleSizeChange = newSize => {
   localStorage.setItem("pageSize", newSize);
 };
 
+const performDelete = () => {
+  try {
+    table.value.getSelectionRows().forEach(async row => {
+      await mailAPI.deleteMail(row.id);
+      let index = tableData.value.findIndex(p => p.id == row.id);
+      tableData.value.splice(index, 1);
+    });
+    showSuccessPrompt("删除成功");
+  } catch (error) {
+    showErrorPrompt("删除失败", error);
+  }
+};
+
 onMounted(() => {
   loadList();
-  handleFetchMail()
+  performFetchMail()
     .then(newCount => {
       if (newCount > 0) {
         loadList();
@@ -96,7 +111,7 @@ onMounted(() => {
     });
 });
 
-defineExpose({ tableData, loadList, handleFetchMail });
+defineExpose({ tableData, loadList, performFetchMail, performDelete });
 </script>
 
 <style lang="less">
