@@ -37,7 +37,7 @@ public class AccountController : BaseController
     [HttpPut(Name = "UpdateAccount")]
     public async Task<ActionResult> UpdateAccount(UpdateAccountViewModel account)
     {
-        var newAccount = await _accountService.UpdateAccount(AccountId, 
+        var newAccount = await _accountService.UpdateAccount(AccountId, account.Password, 
             account.SmtpHost, account.SmtpPort, account.SmtpSsl, 
             account.Pop3Host, account.Pop3Port, account.Pop3Ssl);
         return Ok(newAccount);

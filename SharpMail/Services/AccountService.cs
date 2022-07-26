@@ -69,6 +69,7 @@ public class AccountService
     /// <returns>账户信息JSON对象</returns>
     /// <exception cref="AppError">未激活且参数不全</exception>
     public async Task<JObject> UpdateAccount(int id,
+                                             string? Password,
                                              string? SmtpHost,
                                              int? SmtpPort,
                                              bool? SmtpSsl,
@@ -93,7 +94,9 @@ public class AccountService
             // 激活账户
             account.IsActive = true;
         }
-        
+
+        if (Password != null)
+            account.Password = Password;
         if (SmtpHost != null)
             account.SmtpHost = SmtpHost;
         if (SmtpPort != null)

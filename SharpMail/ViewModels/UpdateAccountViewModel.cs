@@ -2,6 +2,12 @@
 
 public class UpdateAccountViewModel
 {
+    
+    /// <summary>
+    /// 密码
+    /// </summary>
+    public string? Password { get; set; }
+    
     /// <summary>
     /// smtp服务器地址
     /// </summary>
