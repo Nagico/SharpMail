@@ -29,7 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot" />
+      <Content Remove="error.json" />
+      <Resource Include="error.json" />
     </ItemGroup>
 
 </Project>
