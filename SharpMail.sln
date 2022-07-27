@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMail", "SharpMail\SharpMail.csproj", "{A67E9E9C-753D-4777-89AE-E7E25D248DC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMailBackend", "SharpMailBackend\SharpMailBackend.csproj", "{A67E9E9C-753D-4777-89AE-E7E25D248DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMail.Net", "SharpMail.Net\SharpMail.Net.csproj", "{1EBEE533-AB38-4390-96F1-0953AE9E3039}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMailBackend.Net", "SharpMailBackend.Net\SharpMailBackend.Net.csproj", "{1EBEE533-AB38-4390-96F1-0953AE9E3039}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

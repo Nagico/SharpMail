@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish SharpMail to folder" type="DotNetFolderPublish" factoryName="Publish to folder" singleton="false">
+    <riderPublish configuration="Release" delete_existing_files="true" include_native_libs_for_self_extract="true" platform="Any CPU" produce_single_file="true" ready_to_run="true" runtime="win-x64" self_contained="true" target_folder="$PROJECT_DIR$/SharpMail/server" target_framework="net6.0" uuid_high="-6449543221528934537" uuid_low="-8525622085154468412" />
+    <method v="2" />
+  </configuration>
+</component>
