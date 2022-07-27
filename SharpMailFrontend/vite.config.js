@@ -10,6 +10,10 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:
+    process.env.NODE_ENV === "electron_dev" || process.env.NODE_ENV === "electron_dev"
+      ? path.resolve(__dirname, "./dist")
+      : "",
   plugins: [
     vue(),
     AutoImport({
