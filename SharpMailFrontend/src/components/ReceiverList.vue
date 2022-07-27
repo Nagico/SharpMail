@@ -31,7 +31,7 @@ const props = defineProps(["modelValue", "type"]);
 const emit = defineEmits(["update:modelValue"]);
 
 const inputValue = ref("");
-const dynamicTags = ref(props.modelValue || []);
+const { modelValue: dynamicTags } = toRefs(props);
 const inputVisible = ref(false);
 const InputRef = ref(null);
 

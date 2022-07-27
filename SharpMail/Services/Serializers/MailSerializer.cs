@@ -17,6 +17,7 @@ public class MailSerializer : BaseSerializer
         {
             ["id"] = mail.Id,
             ["from"] = mail.From,
+            ["to"] = mail.To,
             ["subject"] = mail.Subject,
             ["text"] = mail.Text,
             ["date"] = mail.Date,
