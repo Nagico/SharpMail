@@ -58,6 +58,12 @@ export function dateDiff(start, end = new Date()) {
   return (startDate - endDate) / 1000 / 86400;
 }
 
+/**
+ * 验证邮箱地址格式
+ * @param {Any} _ 规则
+ * @param {String} value 邮箱地址
+ * @param {Function} callback 回调函数
+ */
 export function validateMailAddr(_, value, callback) {
   if (!value) {
     return callback(new Error("邮箱不能为空"));

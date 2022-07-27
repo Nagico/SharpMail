@@ -72,3 +72,21 @@ export function deleteMail(id) {
       });
   });
 }
+
+/**
+ * 发送邮件
+ * @param {Object} mail 邮件
+ * @returns 发送结果Promise
+ */
+export function sendMail(mail) {
+  return new Promise((resolve, reject) => {
+    http
+      .post("/mails", mail)
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(err => {
+        reject(err.response ? err.response.data.detail : err.message);
+      });
+  });
+}
