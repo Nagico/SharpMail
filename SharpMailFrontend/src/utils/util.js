@@ -57,3 +57,14 @@ export function dateDiff(start, end = new Date()) {
   let endDate = Date.parse(start);
   return (startDate - endDate) / 1000 / 86400;
 }
+
+export function validateMailAddr(_, value, callback) {
+  if (!value) {
+    return callback(new Error("邮箱不能为空"));
+  }
+  if (/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/.test(value)) {
+    callback();
+  } else {
+    callback(new Error("邮箱地址格式不正确"));
+  }
+}

@@ -18,11 +18,11 @@ pnpm install
 ### 启动开发服务器（热重载）
 
 ``` sh
-pnpm run dev
+pnpm dev
 ```
 
 ### 为生产环境打包
 
 ``` sh
-pnpm run build
+pnpm build
 ```

@@ -53,6 +53,7 @@
 <script setup>
 import * as user from "@/api/user";
 import { showErrorPrompt } from "@/utils/MyPrompt";
+import { validateMailAddr } from "@/utils/util";
 
 const router = useRouter();
 
@@ -73,10 +74,10 @@ const loading = ref(false);
 
 const formRef = ref(null);
 const rules = reactive({
-  email: [{ required: true, trigger: "blur" }],
-  password: [{ required: true, trigger: "blur" }],
-  smtpHost: [{ required: true, trigger: "blur" }],
-  pop3Host: [{ required: true, trigger: "blur" }],
+  email: [{ validator: validateMailAddr, trigger: "blur" }],
+  password: [{ required: true, trigger: "blur", message: "请填写邮箱登录密码或授权码" }],
+  smtpHost: [{ required: true, trigger: "blur", message: "请填写SMTP服务器地址" }],
+  pop3Host: [{ required: true, trigger: "blur", message: "请填写POP3服务器地址" }],
 });
 
 const handleAction = () => {
