@@ -9,6 +9,7 @@
     "dev": "vite --port 3000",
     "build": "vite build",
     "serve": "vite preview",
+    "electron:run": "set NODE_ENV=electron_dev&& electron .",
     "electron:start": "set NODE_ENV=electron_dev&& vite build & electron .",
     "electron:build": "set NODE_ENV=electron_build&&electron-builder",
     "lint": "eslint src/**/*.{js,vue} --fix",
@@ -18,6 +19,7 @@
     "@vueuse/core": "^8.9.4",
     "axios": "^0.27.2",
     "element-plus": "^2.2.10",
+    "kill-process-by-name": "^1.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.1.2",
     "vue3-quill": "^0.2.6"
