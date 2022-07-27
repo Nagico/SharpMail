@@ -59,6 +59,5 @@ const handleDelete = () => {
   align-items: center;
   justify-content: flex-start;
   padding: 12px;
-  background-color: var(--el-fill-color-blank);
 }
 </style>

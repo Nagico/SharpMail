@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="background-color: var(--primary-bg)">
     <div class="login-container" :style="{ width: reg ? '285px' : '225px' }">
       <h2>{{ reg ? "配置邮件服务器" : "登录" }}</h2>
       <el-form
@@ -138,10 +138,6 @@ const handleAction = () => {
 </script>
 
 <style lang="less">
-.container {
-  background-color: var(--primary-bg);
-}
-
 .login-container {
   position: fixed;
   padding: 32px;

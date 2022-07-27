@@ -7,7 +7,7 @@
         <el-button @click="handleLogout" type="primary">退出</el-button>
       </div>
     </el-header>
-    <el-container>
+    <el-container style="height: calc(100% - 60px)">
       <el-aside width="250px">
         <el-menu :default-active="route.path" router class="">
           <el-menu-item index="/home/draft">
@@ -57,6 +57,7 @@ const handleLogout = () => {
 <style lang="less" scoped>
 :deep(.el-main) {
   --el-main-padding: 0 !important;
+  height: 100%;
 }
 
 .el-header {
