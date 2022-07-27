@@ -2,28 +2,28 @@
   <el-form label-width="5em" ref="formRef">
     <el-form-item label="发件人" prop="from">
       <div class="tag-container">
-        <el-tag v-for="tag in handleAddressList(props.mailItem.from)" :key="tag" :disable-transitions="false">
+        <el-tag v-for="tag in handleAddressList(props.mailItem.from)" :key="tag">
           {{ tag }}
         </el-tag>
       </div>
     </el-form-item>
     <el-form-item label="收件人" prop="to">
       <div class="tag-container">
-        <el-tag v-for="tag in handleAddressList(props.mailItem.to)" :key="tag" :disable-transitions="false">
+        <el-tag v-for="tag in handleAddressList(props.mailItem.to)" :key="tag">
           {{ tag }}
         </el-tag>
       </div>
     </el-form-item>
     <el-form-item :label="'抄\u3000送'" prop="cc" v-if="props.mailItem.cc.length > 0">
       <div class="tag-container">
-        <el-tag v-for="tag in handleAddressList(props.mailItem.cc)" :key="tag" :disable-transitions="false">
+        <el-tag v-for="tag in handleAddressList(props.mailItem.cc)" :key="tag">
           {{ tag }}
         </el-tag>
       </div>
     </el-form-item>
     <el-form-item :label="'密\u3000送'" prop="bcc" v-if="props.mailItem.bcc.length > 0">
       <div class="tag-container">
-        <el-tag v-for="tag in handleAddressList(props.mailItem.bcc)" :key="tag" :disable-transitions="false">
+        <el-tag v-for="tag in handleAddressList(props.mailItem.bcc)" :key="tag">
           {{ tag }}
         </el-tag>
       </div>
