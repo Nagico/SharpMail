@@ -11,7 +11,7 @@ namespace SharpMail.Net;
 public enum ClientState
 {
     Connected,    //连接登录成功
-    Unconnected  //未连接
+    Unconnected,  //未连接
 }
 
 public class ServerUrl
