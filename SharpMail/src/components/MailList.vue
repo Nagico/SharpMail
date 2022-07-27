@@ -8,15 +8,15 @@
     row-class-name="list-item"
   >
     <el-table-column type="selection" width="55" />
-    <el-table-column prop="from" label="发件人" width="200" v-if="type == 'inbox'" />
-    <el-table-column prop="to" label="收件人" width="200" v-else-if="type == 'sent'" />
-    <el-table-column prop="subject" label="主题" />
-    <el-table-column prop="text" label="正文" />
-    <el-table-column label="发送时间" width="160">
+    <el-table-column prop="from" label="发件人" width="150" v-if="type == 'inbox'" sortable />
+    <el-table-column prop="to" label="收件人" width="175" v-else-if="type == 'sent'" sortable />
+    <el-table-column prop="subject" label="主题" width="225" sortable />
+    <el-table-column label="正文">
       <template #default="scope">
-        <span>{{ formatTime(scope.row.date) }}</span>
+        <div class="mail-text-preview">{{ scope.row.text }}</div>
       </template>
     </el-table-column>
+    <el-table-column prop="date" label="发送时间" width="160" sortable :formatter="row => formatTime(row.date)" />
     <el-table-column prop="read" label="已读" width="60" v-if="type == 'inbox'">
       <template #default="scope">
         <el-icon v-if="scope.row.read"><i-ep-circleCheckFilled /></el-icon>
@@ -155,5 +155,12 @@ defineExpose({ tableData, loadList, performFetchMail, performDelete });
 
 .list-item {
   cursor: pointer;
+}
+
+.mail-text-preview {
+  min-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
