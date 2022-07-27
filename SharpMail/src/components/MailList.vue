@@ -124,6 +124,7 @@ const handleRowClick = row => {
     .then(data => {
       currentMail.value.content = data;
       currentMail.value.subject = row.subject;
+      row.read = true;
       dialogVisible.value = true;
     })
     .catch(err => {
