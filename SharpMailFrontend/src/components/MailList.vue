@@ -11,6 +11,7 @@
     <el-table-column prop="from" label="发件人" width="200" v-if="type == 'inbox'" />
     <el-table-column prop="to" label="收件人" width="200" v-else-if="type == 'sent'" />
     <el-table-column prop="subject" label="主题" />
+    <el-table-column prop="text" label="正文" />
     <el-table-column label="发送时间" width="160">
       <template #default="scope">
         <span>{{ formatTime(scope.row.date) }}</span>
