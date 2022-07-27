@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SharpMail.Entities;
 
@@ -10,9 +11,10 @@ using SharpMail.Entities;
 namespace SharpMail.Migrations
 {
     [DbContext(typeof(EmailClientContext))]
-    partial class EmailClientContextModelSnapshot : ModelSnapshot
+    [Migration("20220727103117_AddMailText")]
+    partial class AddMailText
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");

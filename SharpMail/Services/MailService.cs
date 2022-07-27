@@ -217,6 +217,7 @@ public class MailService
                 Uid = "",
                 Type = 2,  // 已发送
                 Read = true,
+                Text = MailUtil.HtmlToSingleLineText(mail.HtmlBody),
                 Subject = msg.Subject,
                 From = _mailSerializer.AddressInfo(msg.From),
                 To = _mailSerializer.AddressInfo(msg.To),
@@ -277,6 +278,7 @@ public class MailService
                     Uid = mailUid,
                     Type = 1,  // 收件箱
                     Read = false,
+                    Text = MailUtil.HtmlToSingleLineText(msg.HtmlBody ?? msg.TextBody),
                     Subject = msg.Subject,
                     From = _mailSerializer.AddressInfo(msg.From),
                     To = _mailSerializer.AddressInfo(msg.To),

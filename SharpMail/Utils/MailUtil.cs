@@ -71,6 +71,14 @@ public static class MailUtil
         return res;
     }
     
+    public static string HtmlToSingleLineText(string htmlCode)
+    {
+        var res = HtmlToText(htmlCode);
+        res = Regex.Replace(res, @"\n", " ").Trim();
+        
+        return res;
+    }
+    
     public static string ToGbk(string text)
     {
         var bs = Encoding.GetEncoding("UTF-8").GetBytes(text);

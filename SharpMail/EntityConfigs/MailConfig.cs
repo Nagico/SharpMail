@@ -31,6 +31,9 @@ public class mailConfig : IEntityTypeConfiguration<Mail>
             .HasDefaultValue(0)
             .IsRequired();
 
+        builder.Property(x => x.Text)
+            .HasColumnName("text");
+        
         builder.Property(x => x.Subject)
             .HasColumnName("subject");
         

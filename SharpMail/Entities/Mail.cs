@@ -53,6 +53,11 @@ public class Mail
     public DateTime Date { get; set; }
     
     /// <summary>
+    /// 邮件正文文本
+    /// </summary>
+    public string? Text { get; set; }
+    
+    /// <summary>
     /// 邮件内容
     /// </summary>
     public string? Content { get; set; }
