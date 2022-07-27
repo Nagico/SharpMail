@@ -1,65 +1,71 @@
-## email账户
+<div align="center">
 
-POP3服务器: pop.163.com
+# SharpMail
 
-SMTP服务器: smtp.163.com
+<!-- markdownlint-disable-next-line MD036 -->
+_✨ 基于 C# 和 Vue 的邮件管理平台 ✨_
 
-### co_test1@163.com
+_✨ Author: [LSX-s-Software](https://github.com/LSX-s-Software) | [NagisaCo](https://github.com/NagisaCo/) ✨_
+</div>
 
-密码：co_test123
+<p align="center">
+  <a href="license">
+    <img src="https://img.shields.io/badge/LICENSE-GPLv3-red" alt="license">
+  </a>
+  <a href="stargazers">
+    <img src="https://img.shields.io/github/stars/Nagico/SharpMail?color=yellow&label=Github%20Stars" alt="star">
+  </a>
+  <br/>
+  <img src="https://img.shields.io/badge/ASP.Net%20Core-6.0-512BD4" alt="aspnetcore">
+  <img src="https://img.shields.io/badge/Vue-3.0-41B784" alt="vue">
+  <img src="https://img.shields.io/badge/Electron-19.0-2F3241" alt="electron">
+</p>
+<!-- markdownlint-enable MD033 -->
 
-授权码：ASSKUOTNRNQETWPU
+## 编译教程
 
-```json
-{
-  "email": "co_test1@163.com",
-  "password": "ASSKUOTNRNQETWPU"
-}
-```
+### 后端编译
 
-```json
-{
-  "smtp_host": "smtp.163.com",
-  "smtp_port": 25,
-  "smtp_ssl": false,
-  "pop3_host": "pop3.163.com",
-  "pop3_ssl": false,
-  "pop3_port": 110
-}
-```
+使用 Visual Studio 或 JetBrains Rider 打开项目 `SharpMail.sln`，使用 `Publish SharpMail to folder.run.xml` 配置进行编译发布。
 
-```json
-{
-  "smtp_host": "smtp.163.com",
-  "smtp_port": 465,
-  "smtp_ssl": true,
-  "pop3_host": "pop3.163.com",
-  "pop3_ssl": true,
-  "pop3_port": 995
-}
-```
+编译成功后会在 `/SharpMail/server/` 文件夹下生成
 
-```json
-{
-  "to": ["co_test2@163.com", "co_test1@163.com"],
-  "subject": "中文测试2",
-  "html_body": "<div style=\"line-height:1.7;color:#000000;font-size:14px;font-family:Arial\"><div><p style=\"margin:0;\"><b>123</b></p><p style=\"margin:0;\"><img src=\"cid:7845ec4$2$18238b9c038$Coremail$co_test2$163.com\" orgwidth=\"591\" orgheight=\"227\" data-image=\"1\" style=\"width: 591px; height: 227px;\"></p><b>1213</b></div><div></div><p style=\"margin: 0;\"><br></p><p style=\"margin: 0;\"><img src=\"https://mimg.127.net/p/js6/lib/htmlEditor/portrait/E-Meow/preview/E-Meow2.png\" style=\"width:40px;height:40px;\"></p><div style=\"position:relative;zoom:1\"><div style=\"clear:both\"></div></div></div>"
-}
-```
+- `SharpMailBackend.exe` 程序
+- `appsettings.json` 配置文件。
+
+
+### 前端编译及项目打包
+
+请先处理项目文件换行符为 **LF(\n)**。
+
+在 `/SharpMail/` 文件夹下执行
 
 ```shell
-helo smtp.163.com
-auth login
-Y29fdGVzdDFAMTYzLmNvbQ==
-QVNTS1VPVE5STlFFVFdQVQ==
-MAIL FROM: <co_test1@163.com>
-RCPT TO: <co_test2@163.com>
-DATA
-.
+pnpm install
+pnpm electron:build
 ```
 
-### co_test2@163.com
+打包成功后会在 `/SharpMail/dist` 文件夹下生成
 
-密码：co_test123
+- win-unpacked 可执行程序目录
+- sharp_mail Setup 1.0.0.exe 安装程序
 
-授权码：ETSTLEASRPGXUWIX
+可任选方式进行软件的运行。
+
+## 项目结构
+
+```
+SharpMail
+├─ .run  后端发布配置
+├─ LICENSE
+├─ README.md
+├─ SharpMail  前端项目
+├─ SharpMail.sln  项目文件
+├─ SharpMailBackend  后端项目
+└─ SharpMailBackend.Net  后端网络访问项目
+       ├─ BaseClient.cs  基础网络访问类
+       ├─ Pop3Client.cs  POP3协议
+       ├─ SharpMailBackend.Net.csproj
+       ├─ SharpMailNetException.cs  异常类
+       └─ SmtpClient.cs  SMTP协议
+```
