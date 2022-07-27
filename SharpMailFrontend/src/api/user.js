@@ -56,8 +56,12 @@ export function config(smtpHost, smtpPort, smtpSsl, pop3Host, pop3Port, pop3Ssl)
         pop3_port: pop3Port,
         pop3_ssl: pop3Ssl,
       })
-      .then(() => {
-        resolve();
+      .then(res => {
+        if (res.data.is_connected) {
+          resolve();
+        } else {
+          reject("无法连接至SMTP或POP3邮件服务器，请检查配置信息是否正确");
+        }
       })
       .catch(err => {
         reject(err.response ? err.response.data.detail : err.message);

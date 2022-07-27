@@ -76,8 +76,8 @@ const handleSave = () => {
         .then(() => {
           showSuccessPrompt("保存成功");
         })
-        .catch(() => {
-          showErrorPrompt("保存失败");
+        .catch(err => {
+          showErrorPrompt("保存失败", err);
         })
         .finally(() => {
           saving.value = false;
