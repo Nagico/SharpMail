@@ -34,7 +34,7 @@
   />
   <!-- 阅读对话框 -->
   <el-dialog v-model="dialogVisible" :title="currentMail.subject">
-    <MailDetail :mail-item="currentMail" />
+    <MailDetail :mail-item="currentMail.content" />
   </el-dialog>
 </template>
 
@@ -113,12 +113,21 @@ const performDelete = () => {
 const dialogVisible = ref(false);
 const currentMail = ref({
   subject: "",
+  content: null,
 });
 
 const handleRowClick = row => {
-  // 在这里获取邮件详情，然后设置到currentMail中，再使用下面的dialogVisible.value = true显示对话框
-  dialogVisible.value = true;
-  currentMail.value = row;
+  // 获取邮件详情
+  mailAPI
+    .getMailDetail(row.id)
+    .then(data => {
+      currentMail.value.content = data;
+      currentMail.value.subject = row.subject;
+      dialogVisible.value = true;
+    })
+    .catch(err => {
+      showErrorPrompt("获取邮件详情失败", err);
+    });
 };
 
 onMounted(() => {

@@ -90,3 +90,21 @@ export function sendMail(mail) {
       });
   });
 }
+
+/**
+ * 获取邮件详情
+ * @returns 列表结果Promise
+ * @param id 邮件id
+ */
+export function getMailDetail(id) {
+  return new Promise((resolve, reject) => {
+    http
+      .get(`/mails/${id}`)
+      .then(res => {
+        resolve(res.data);
+      })
+      .catch(err => {
+        reject(err.response ? err.response.data.detail : err.message);
+      });
+  });
+}
