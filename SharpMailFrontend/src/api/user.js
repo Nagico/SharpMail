@@ -33,6 +33,7 @@ export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("userid");
   localStorage.removeItem("email");
+  localStorage.removeItem("draft");
 }
 
 /**
