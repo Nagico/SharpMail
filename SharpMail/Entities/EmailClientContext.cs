@@ -9,7 +9,10 @@ namespace SharpMail.Entities;
 public class EmailClientContext : DbContext
 {
     public EmailClientContext(DbContextOptions<EmailClientContext> options)
-        : base(options) { }
+        : base(options)
+    {
+        Database.Migrate();
+    }
     
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Mail> Mails { get; set; }

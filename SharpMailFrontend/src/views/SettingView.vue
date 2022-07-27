@@ -111,4 +111,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.container {
+  padding: 20px;
+}
+</style>
