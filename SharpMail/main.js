@@ -31,6 +31,10 @@ app.whenReady().then(() => {
     } else {
       console.log("server is not running. starting...");
       startServer();
+      var start = (new Date()).getTime();
+      while ((new Date()).getTime() - start < 2000) {
+        continue;
+      }
     }
     createWindow();
 
