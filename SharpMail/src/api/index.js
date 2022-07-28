@@ -24,7 +24,6 @@ http.interceptors.response.use(
   },
   error => {
     if (error.response) {
-      console.warn(error);
       switch (error.response.status) {
         case 401:
           location.href = "/";

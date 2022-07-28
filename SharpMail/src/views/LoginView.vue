@@ -57,6 +57,10 @@ import { validateMailAddr } from "@/utils/util";
 
 const router = useRouter();
 
+if (localStorage.getItem("token") && localStorage.getItem("email")) {
+  router.replace("/home/inbox");
+}
+
 const userInfo = reactive({
   email: "",
   password: "",
