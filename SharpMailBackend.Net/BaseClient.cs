@@ -39,35 +39,40 @@ public abstract class BaseClient
     protected readonly StreamReader _streamReader;   //读
     public ClientState State { get; set; } //当前连接状态
     
-    private static int TIMEOUT = 2000; //超时时间
+    private int timeout = 2000; //超时时间
 
-    protected BaseClient(string email, string password, ServerUrl server)
+    protected BaseClient(string email, string password, ServerUrl server, int timeout=2000)
     {
         this.email = email;
         this.password = password;
         this.server = server;
+        this.timeout = timeout;
         
         try
         {
+            _client = new TcpClient();
+            var result = _client.BeginConnect(server.Host, server.Port, null, null);
+            var success = result.AsyncWaitHandle.WaitOne(this.timeout, false);
+            if (!success)
+            {
+                throw new Exception("连接超时");
+            }
+            
             if (!server.UseSsl)
             {
-                _client = new TcpClient(server.Host, server.Port);
                 _streamWriter = _client.GetStream();
                 _streamReader = new StreamReader(_client.GetStream());
-                _streamReader.BaseStream.ReadTimeout = TIMEOUT;
             }
             else
             {
-                _client = new TcpClient(server.Host, server.Port);
-                
                 var sslStream = new SslStream(_client.GetStream(), false);
                 sslStream.AuthenticateAsClient(server.Host);
                 
                 _streamWriter = sslStream;
                 
                 _streamReader = new StreamReader(sslStream);
-                _streamReader.BaseStream.ReadTimeout = TIMEOUT;
             }
+            _streamReader.BaseStream.ReadTimeout = this.timeout;
         }
         catch (Exception e)
         {
@@ -171,14 +176,13 @@ public abstract class BaseClient
     /// <returns>第一行数据</returns>
     protected async Task<string> ReceiveFirstLineAsync()
     {
-        // var task = _streamReader.ReadLineAsync();
-        // var res = task.Wait(TIMEOUT);
-        //
-        // if (!res)
+        // if (_streamReader.Peek() == -1)
         //     return string.Empty;
-        //
-        // return task.Result ?? string.Empty;
-        return ReceiveFirstLine();
+        
+        var res = await _streamReader.ReadLineAsync();
+
+        return res ?? string.Empty;
+        // return ReceiveFirstLine();
     }
     
     /// <summary>
