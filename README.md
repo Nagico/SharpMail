@@ -26,13 +26,23 @@ _✨ Author: [LSX-s-Software](https://github.com/LSX-s-Software) | [NagisaCo](ht
 
 ### 后端编译
 
-使用 Visual Studio 或 JetBrains Rider 打开项目 `SharpMail.sln`，使用 `Publish SharpMail to folder.run.xml` 配置进行编译发布。
+#### 使用 JetBrains Rider
+
+使用 JetBrains Rider 打开项目 `SharpMail.sln`，使用 `Publish SharpMail to folder.run.xml` 配置进行编译发布。
 
 编译成功后会在 `/SharpMail/server/` 文件夹下生成
 
 - `SharpMailBackend.exe` 程序
 - `appsettings.json` 配置文件。
 
+#### 使用 Visual Studio
+
+使用 Visual Studio 打开项目 `SharpMail.sln`，发布 `SharpMailBackend` 到 `../SharpMail/server/` 文件夹。
+
+编译成功后会在 `/SharpMail/server/` 文件夹下生成
+
+- `SharpMailBackend.exe` 程序
+- `appsettings.json` 配置文件。
 
 ### 前端编译及项目打包
 
