@@ -73,6 +73,7 @@ public abstract class BaseClient
                 _streamReader = new StreamReader(sslStream);
             }
             _streamReader.BaseStream.ReadTimeout = this.timeout;
+            _client.ReceiveTimeout = this.timeout;
         }
         catch (Exception e)
         {

@@ -18,7 +18,8 @@ public class Pop3Client : BaseClient
     protected override void CheckResponse(string response, string msg="连接失败", ClientState next=ClientState.Unconnected)
     {
         Console.WriteLine("POP3: " + response);
-        if (response.IndexOf("+OK", StringComparison.Ordinal) == 0) return;
+        if (response.IndexOf("+OK", StringComparison.Ordinal) == 0) 
+            return;
         
         State = next;
         throw new Pop3ConnectException(msg);
