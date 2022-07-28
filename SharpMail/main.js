@@ -1,10 +1,12 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu } = require("electron");
 const path = require("path");
+const { exec, execFile } = require("child_process");
+
+const backendExecutableFile = process.platform === "win32" ? "SharpMailBackend.exe" : "SharpMailBackend";
 
 function createWindow() {
   Menu.setApplicationMenu(null); // null值取消顶部菜单栏
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -12,8 +14,6 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-
-  // and load the index.html of the app.
   mainWindow.loadFile("dist/index.html");
 
   // Open the DevTools.
@@ -25,11 +25,11 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // 检测后端服务是否启动，避免端口被占用
-  isRunning("SharpMailBackend.exe", status => {
+  isRunning(backendExecutableFile, status => {
     if (status > 0) {
       console.log("server has already started");
     } else {
-      console.log("server is not running");
+      console.log("server is not running. starting...");
       startServer();
     }
     createWindow();
@@ -53,18 +53,18 @@ app.on("before-quit", () => {
   stopServer();
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
 // run backend server
 let serverProcess = null;
 function startServer() {
-  let serverPath = process.env.NODE_ENV === "electron_dev" ? "server" : path.join("resources", "server");
-  serverProcess = require("child_process").execFile(
-    "SharpMailBackend.exe",
+  let serverPath =
+    process.env.NODE_ENV === "electron_dev"
+      ? path.join(process.cwd(), "server")
+      : path.resolve(process.resourcesPath, "server");
+  serverProcess = execFile(
+    path.join(serverPath, backendExecutableFile),
     [`--urls=https://localhost:7264/`],
     {
-      cwd: path.join(process.cwd(), serverPath),
+      cwd: serverPath,
       env: process.env,
     },
     (error, stdout, stderr) => {
@@ -75,7 +75,6 @@ function startServer() {
       console.log(stderr);
     }
   );
-  //serverProcess = require("child_process").spawn("./SharpMail.exe --urls=https://localhost:7264/", { cwd: "./server" });
   // 启动成功的输出
   serverProcess.stdout.on("data", function (data) {
     console.log("[server]" + data);
@@ -91,7 +90,7 @@ function startServer() {
 }
 
 function stopServer() {
-  isRunning("sharp_mail.exe", status => {
+  isRunning(process.platform == "win32" ? "SharpMail.exe" : "SharpMail", status => {
     if (status < 5) {
       // 最后一个前端运行
       if (serverProcess) {
@@ -100,13 +99,11 @@ function stopServer() {
         serverProcess.kill();
       } else {
         const killProcess = require("kill-process-by-name");
-        killProcess("SharpMailBackend.exe");
+        killProcess(backendExecutableFile);
       }
     }
   });
 }
-
-const exec = require("child_process").exec;
 
 const isRunning = (query, cb) => {
   let platform = process.platform;
@@ -116,15 +113,13 @@ const isRunning = (query, cb) => {
       cmd = `tasklist`;
       break;
     case "darwin":
-      cmd = `ps -ax | grep ${query}`;
-      break;
     case "linux":
-      cmd = `ps -A`;
+      cmd = `ps -ef | grep ${query} | grep -v "grep"`;
       break;
     default:
       break;
   }
-  exec(cmd, (err, stdout) => {
+  exec(cmd, (_, stdout) => {
     cb(occurrences(stdout.toLowerCase(), query.toLowerCase(), false));
   });
 };
