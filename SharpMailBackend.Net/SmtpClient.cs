@@ -131,19 +131,11 @@ public class SmtpClient : BaseClient
         CheckResponse(response);
 
         // 设置收件人
-        int i = 0;
-        try
+        foreach (var receiver in receivers)
         {
-            for (; i < receivers.Count; i++)
-            {
-                await SendCommandAsync($"RCPT TO:<{receivers[i]}>");
-                response = await ReceiveFirstLineAsync();
-                CheckResponse(response);
-            }
-        }
-        catch (SmtpException)
-        {
-            throw new SmtpException($"收件人'{receivers[i]}'的邮箱地址不存在");
+            await SendCommandAsync($"RCPT TO:<{receiver}>");
+            response = await ReceiveFirstLineAsync();
+            CheckResponse(response, $"收件人'{receiver}'的邮箱地址不存在");
         }
 
         // 发送邮件内容
