@@ -131,19 +131,19 @@ public class SmtpClient : BaseClient
         CheckResponse(response);
 
         // 设置收件人
-        var currentReceiver = "";
+        int i = 0;
         try
         {
-            receivers.ForEach(async receiver => {
-                currentReceiver = receiver;
-                await SendCommandAsync($"RCPT TO:<{receiver}>");
+            for (; i < receivers.Count; i++)
+            {
+                await SendCommandAsync($"RCPT TO:<{receivers[i]}>");
                 response = await ReceiveFirstLineAsync();
                 CheckResponse(response);
-            });
+            }
         }
         catch (SmtpException)
         {
-            throw new SmtpException($"收件人'{currentReceiver}'的邮箱地址不存在");
+            throw new SmtpException($"收件人'{receivers[i]}'的邮箱地址不存在");
         }
 
         // 发送邮件内容
