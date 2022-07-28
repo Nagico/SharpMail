@@ -21,6 +21,8 @@ public class MailService
     private readonly EmailClientContext _context;
     private readonly MailSerializer _mailSerializer;
     
+    private static int MAX_MAIL_COUNT = 100;
+    
     /// <summary>
     /// 初始化
     /// </summary>
@@ -288,6 +290,11 @@ public class MailService
                 };
 
                 await _context.Mails.AddAsync(mail);
+                
+                if (cnt >= MAX_MAIL_COUNT) // 每次最多拉取MAX_MAIL_COUNT封邮件
+                {
+                    break;
+                }
             }
 
             await client.DisconnectAsync();
