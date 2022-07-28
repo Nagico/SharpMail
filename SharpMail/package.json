@@ -2,16 +2,16 @@
   "name": "sharp_mail",
   "private": true,
   "main": "main.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sharp Mail, a mail client",
   "author": "Sharp Mail",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",
     "serve": "vite preview",
-    "electron:run": "set NODE_ENV=electron_dev&& electron .",
-    "electron:start": "set NODE_ENV=electron_dev&& vite build & electron .",
-    "electron:build": "set NODE_ENV=electron_build&&electron-builder",
+    "electron:run": "set NODE_ENV=electron_dev && electron .",
+    "electron:start": "set NODE_ENV=electron_dev && vite build && electron .",
+    "electron:build": "set NODE_ENV=electron_build && vite build && electron-builder",
     "lint": "eslint src/**/*.{js,vue} --fix",
     "format": "prettier --write 'src/**/*.{js,vue}'"
   },
@@ -43,6 +43,22 @@
     "vite-plugin-eslint": "^1.6.1"
   },
   "build": {
+    "productName": "SharpMail",
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
     "extraResources": [
       {
         "from": "./server/",
